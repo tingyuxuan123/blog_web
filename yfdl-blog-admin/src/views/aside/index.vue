@@ -70,7 +70,16 @@
                 <template #title>个人资料</template>
             </el-menu-item>
         </el-sub-menu>
-
+        <el-sub-menu index="7">
+            <template #title>
+                <el-icon><User /></el-icon>
+                <span>系统管理</span>
+            </template>
+            <el-menu-item index="/layout/system/menu">
+                <el-icon></el-icon>
+                <template #title>菜单管理</template>
+            </el-menu-item>
+        </el-sub-menu>
     </el-menu>
  
 

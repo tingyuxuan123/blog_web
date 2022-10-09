@@ -12,3 +12,7 @@ export const updatePassword=(password:string,)=>{
         password
     })
 }
+
+export const getRouters=()=>{
+    return request("/getRouters",'get')   
+}

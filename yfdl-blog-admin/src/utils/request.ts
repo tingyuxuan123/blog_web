@@ -69,13 +69,14 @@ instance.interceptors.response.use((res)=>{
     return Promise.reject(err)
 })
 
-export default((url:string,method:string,submitData?:Record<string,any>)=>{
+export default((url:string,method:string,submitData?:Record<string,any>,headers?:Record<string,any>)=>{
 
     return instance({
         url,
         method,
         //如果是get请求 需要使用params传递，反之使用data
         [method.toLowerCase() ==='get' ? "params" :"data"]:submitData,
+        headers
     })
 
 })

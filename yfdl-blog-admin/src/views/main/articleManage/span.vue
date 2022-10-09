@@ -24,10 +24,8 @@
         <el-row :gutter="0">
 
             <el-button :icon="Plus" type="primary" plain @click="addViewVisible=!addViewVisible">添加</el-button>
-            <el-button :icon="Delete" type="danger" plain>
-            删除
-            </el-button>
-            <el-button :icon="Download" type="warning" plain>导出</el-button>
+            <el-button :icon="Delete" type="danger" plain>删除</el-button>
+            <!-- <el-button :icon="Download" type="warning" plain>导出</el-button> -->
 
         </el-row>
 

@@ -26,7 +26,7 @@
 
         <el-button :icon="Plus" type="primary" plain @click="addViewVisible=!addViewVisible">添加</el-button>
         <el-button :icon="Delete" type="danger" plain>删除</el-button>
-        <el-button :icon="Download" type="warning" plain>导出</el-button>
+        <!-- <el-button :icon="Download" type="warning" plain>导出</el-button> -->
 
       </el-row>
 
@@ -36,6 +36,7 @@
           <el-table-column type="index"  label="id" width="100" />
           <el-table-column prop="date" label="分类名" />
           <el-table-column prop="name" label="描述"  />
+          <el-table-column prop="name" label="文章篇数"  />
           <el-table-column prop="address" label="状态" type="radio" />
           <el-table-column label="操作">
               <template #default="scope">
@@ -93,6 +94,7 @@
 <script lang='ts' setup name="category">
 import { reactive, ref } from 'vue'
 import { Plus, Delete, Search, Download ,RefreshLeft} from '@element-plus/icons-vue'
+import {getAllCategoryDetailList} from "@/api/category"
 
 
 
@@ -134,6 +136,13 @@ const addCategory=()=>{
 
 }
 
+const queryAllCategoryDetailList=async ()=>{
+  const res= await getAllCategoryDetailList()
+  console.log(res);
+  
+}
+
+queryAllCategoryDetailList();
 
 </script>
 

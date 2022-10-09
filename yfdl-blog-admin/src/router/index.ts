@@ -10,7 +10,11 @@ const router = createRouter({
   routes: [
     {
       path:'/',
-      redirect:"/layout/userInfo"
+      redirect:"/layout/panel"
+    },
+    {
+      path:'/layout',
+      redirect:"/layout/panel"
     },
     {
       name:"login",
@@ -62,6 +66,11 @@ const router = createRouter({
           path:"imageManage",
           component:import("@/views/main/imageManage/index.vue")
         },
+        {
+          name:"menu",
+          path:"system/menu",
+          component:import("@/views/main/system/menu.vue")
+        }
       ]
     }
   ]
@@ -77,7 +86,7 @@ router.beforeEach((to,from,next)=>{
      next() 
   }else{
     const fullPath:string=encodeURIComponent(router.currentRoute.value.fullPath);
-    console.log(fullPath);
+
     
     //encodeURIComponent 转换url编码，防止解析时出现问题
     router.push("/login?redirectUrl="+fullPath)       
