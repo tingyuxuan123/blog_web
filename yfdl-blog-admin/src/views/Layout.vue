@@ -22,6 +22,7 @@ import Aside from './aside/index.vue'
 import Header from './header/index.vue'
 import {usemenuStore} from '@/stores/menuStore'
 
+
  let menuStore=usemenuStore()
  
 

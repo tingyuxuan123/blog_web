@@ -85,7 +85,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item>
-              <el-button type="primary" size="medium" @click="handleSubmit">{{ aId?"更新":"发布" }}</el-button>
+              <el-button type="primary" size="default" @click="handleSubmit">{{ aId?"更新":"发布" }}</el-button>
             </el-form-item>
             <el-form-item>
             </el-form-item>

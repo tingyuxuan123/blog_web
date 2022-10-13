@@ -2,6 +2,8 @@
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "compilerOptions": {
+    
+    "preserveValueImports": false,
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -19,7 +21,7 @@
       "@/*": ["src/*"]
     }
   },
-  
+  "type":["node"],
   "references": [
     {
       "path": "./tsconfig.config.json"

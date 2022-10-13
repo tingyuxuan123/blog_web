@@ -38,9 +38,9 @@
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         >
           <el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="160" />
-          <el-table-column prop="icon" label="图标" align="center" width="100">
+          <el-table-column prop="icon" label="图标" width="100">
             <template #default="scope">
-              <svg-icon :icon-class="scope.row.icon" />
+            
             </template>
           </el-table-column>
           <el-table-column prop="orderNum" label="排序" width="60" />
@@ -52,28 +52,31 @@
               <el-tag v-if="scope.row.status==1" type="danger">停用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime">
+          <el-table-column label="创建时间"  prop="createTime">
             <template #default="scope">
               <span>{{ scope.row.createTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column label="操作"  class-name="small-padding fixed-width">
                   <template #default="scope">
                     <el-button
-                      size="mini"
-                      type="text"
+                      size="small"
+                      type="primary"
+                      text
                       icon="Edit"
                       @click="handleUpdate(scope.row)"
                     >修改</el-button>
                     <el-button
-                      size="mini"
-                      type="text"
+                      size="small"
+                      type="primary"
+                      text
                       icon="Plus"
                       @click="handleAdd(scope.row)"
                     >新增</el-button>
                     <el-button
-                      size="mini"
-                      type="text"
+                      size="small"
+                      type="primary"
+                      text
                       icon="Delete"
                       @click="handleDelete(scope.row)"
                     >删除</el-button>
@@ -89,13 +92,14 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级菜单">
-              <!-- <treeselect
+              <el-tree-select
                 v-model="form.parentId"
-                :options="menuOptions"
-                :normalizer="normalizer"
+                :data="menuOptions"
+                :render-after-expand="false"
                 :show-count="true"
                 placeholder="选择上级菜单"
-              /> -->
+                :check-strictly="true"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -109,7 +113,6 @@
           </el-col>
           <el-col :span="24">
             <el-form-item v-if="form.menuType != 'F'" label="菜单图标">
-              <!-- <IconSelect ref="iconSelect" @selected="selected" /> -->
               <el-select
                 v-model="form.icon"
                 placeholder="图标"
@@ -117,10 +120,10 @@
                 size="small"
                 style="width: 240px"
               >
-                <!-- <el-option v-for="(item, index) in icons" :key="index" :value="item">
-                  <svg-icon :icon-class="item" />
-                  <span>{{ item }}</span>
-                </el-option> -->
+                <el-option v-for="(item, index) in icons" :key="index" :value="item.name">
+                  <svg-icon :icon-class="item.name" />
+                  <span style="margin-left:5px">{{ item.name }}</span>
+                </el-option>
 
               </el-select>
 
@@ -136,8 +139,18 @@
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.menuType =='C'" prop="name" label="路由名称">
+              <el-input v-model="form.name" placeholder="请输入路由名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.menuType != 'F' && form.menuType !='M'" prop="path" label="路由地址">
+              <el-input v-model="form.path" placeholder="请输入路由地址" />
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
-            <el-form-item v-if="form.menuType != 'F'" prop="path" label="路由地址">
+            <el-form-item v-if="form.menuType == 'M' " prop="path" label="路由地址">
               <el-input v-model="form.path" placeholder="请输入路由地址" />
             </el-form-item>
           </el-col>
@@ -173,7 +186,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="">确 定</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="">取 消</el-button>
       </div>
     </el-dialog>
@@ -183,12 +196,16 @@
 
 <script lang='ts' setup >
 import {reactive, ref} from 'vue'
-import { Plus, Delete, Search, Download ,RefreshLeft} from '@element-plus/icons-vue'
+import { Plus, Delete, Search, RefreshLeft} from '@element-plus/icons-vue'
 import {getRouters} from "@/api/user"
+import {insertMenu,updateMenu,deleteMenu} from '@/api/menu'
+import { ElMessage } from 'element-plus';
+import {useRoutesStore} from '@/stores/routesStore'
 
-let a=ref("M")
 
 let queryParams=ref<Record<string,any>>({})  //查询条件
+let menuOptions=ref<Array<Record<string,any>>>([]);
+let routesStore=useRoutesStore()
 
 let form =reactive<Record<string,any>>({
         id: undefined,
@@ -199,7 +216,8 @@ let form =reactive<Record<string,any>>({
         orderNum: undefined,
         isCache: '0',
         visible: '0',
-        status: '0'
+        status: '0',
+        name:undefined
 })  //添加表单
 
 
@@ -216,37 +234,128 @@ let rules=ref({
         ],
         path: [
           { required: true, message: '路由地址不能为空', trigger: 'blur' }
+        ],
+        name:[
+        { required: true, message: '路由名称不能为空', trigger: 'blur' }
         ]
       })
+let icons=ref<{[key:string]:any}[]>([])
 
-//编辑
+//编辑修改
 let handleUpdate=(row:any)=>{
+  title.value="修改菜单"
+  form.parentId=row.parentId
+  form.menuName=row.menuName
+  form.menuType=row.menuType
+  form.icon=row.icon
+  form.orderNum=row.orderNum
+  form.visible=row.visible
+  form.status=row.status
+  form.path=row.path
+  form.component=row.component
+  form.perms=row.perms
+  form.id=row.id
+  form.name=row.name
+  open.value=true
+}
+
+let getIcons=()=>{
+  const modulesFiles=import.meta.glob("@/assets/icons/svg/*.svg")
+  
+
+  const arr=Object.keys(modulesFiles).map((i)=>{
+    let fileName = i.replace(/(.*\/)*([^.]+).*/ig,"$2")  //获取文件名 
+       
+      return {name:fileName,url:i}
+        
+  })  
+
+
+  return arr;  
 
 }
+
+
+icons.value=getIcons();
 
 //删除
-let handleDelete=(row:any)=>{
+let handleDelete=async (row:any)=>{
+  const res= await deleteMenu(row.id)
+  ElMessage({
+    showClose: true,
+    message: '删除成功!',
+    type: 'success',
+    })
 
+    getRouterList()
 }
 
+    // 表单重置
+let reset=()=>{
+     
+  form.parentId=0
+  form.menuName=undefined
+  form.menuType='M'
+  form.icon=undefined
+  form.orderNum=undefined
+  form.visible='0'
+  form.status='0'
+  form.path=undefined
+  form.component=undefined
+  form.perms=undefined;
+  form.id=undefined
+  form.name=undefined
+}
+//刷新界面
 const getRouterList=async()=>{
   loading.value=true
   const res:any=await getRouters()
-  console.log(res);
   menuList.value=res.data.menus
   loading.value=false
   
+  getTreeselect()
 }
 
 getRouterList()
 
   /** 查询菜单下拉树结构 */
 const getTreeselect=()=>{
-   
+  let menu={value: 0, label: '主类目', children: []};
+
+  if(menuList.value.length>0){
+    menu.children=getTree(menuList.value)
+  }
+  
+  menuOptions.value.push(menu)
+
+}
+//取消按钮
+const cancel=()=>{
+      open.value = false
+      reset()
 }
 
-const handleAdd=(row:any)=>{
+const getTree=(children:Array<Record<string,any>>)=>{
+  let reChildren=[]
+  children.forEach((item:Record<string,any>,index:number)=>{
+    let child
+    if(item.children.length==0){
+      child={value:item.id,label:item.menuName}
+    }else{
+     
+      child={value:item.id,label:item.menuName,children:getTree(item.children)}
+    }
+    reChildren.push(child);
+   
+    
+  })
 
+  return reChildren
+}
+
+
+const handleAdd=(row:any)=>{
+  reset()
   if (row != null && row.id) {
         form.parentId = row.id
       } else {
@@ -254,6 +363,39 @@ const handleAdd=(row:any)=>{
       }
       open.value = true
       title.value = '添加菜单'
+    }
+
+
+//提交
+const submitForm =async()=>{
+
+  console.log(form.id);
+  
+
+  if(form.id){
+    //更新
+    await updateMenu(form)
+
+    ElMessage({
+    showClose: true,
+    message: '更新成功!',
+    type: 'success',
+    })
+
+  }else{
+    await insertMenu(form)
+
+    ElMessage({
+    showClose: true,
+    message: '添加成功!',
+    type: 'success',
+    })
+  //添加
+}
+
+getRouterList()
+//更新次菜单
+// routesStore.GenerateRoutes()
 
 
 }
