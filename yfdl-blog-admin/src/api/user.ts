@@ -16,3 +16,9 @@ export const updatePassword=(password:string,)=>{
 export const getRouters=()=>{
     return request("/getRouters",'get')   
 }
+
+
+export const getUserList=(queryParam:any)=>{
+    return request("/user/userList",'get',{...queryParam})
+}
+

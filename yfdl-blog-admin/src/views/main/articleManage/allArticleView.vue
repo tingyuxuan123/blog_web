@@ -48,7 +48,7 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-table :data="articleList" height="250" style="width: 100%" >
+        <el-table :data="articleList" height="100%" style="width: 100%" >
           <el-table-column type="selection" width="50"/>
           <el-table-column prop="title" label="标题" :show-overflow-tooltip="true"/>
      
@@ -202,12 +202,12 @@ let handleDelete =async (index: any, row: any) => {
 
 //一页显示数量改变
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+ // console.log(`${val} items per page`)
 }
 
 //当前页改变
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
+ // console.log(`current page: ${val}`)
 }
 
 const toWrite=()=>{

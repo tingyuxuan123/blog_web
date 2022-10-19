@@ -24,6 +24,7 @@ import {reactive, ref} from 'vue'
 import {login} from '@/api/login'
 import {useUserStore} from '@/stores/userStore'
 import {useRouter} from "vue-router"
+import { ElMessage } from 'element-plus';
 
 let loginForm=reactive({userName:"",password:""});
 const userStore=useUserStore()
@@ -31,7 +32,7 @@ const router = useRouter()
 
 
 const onSubmit=async()=>{
-   let data= await login(loginForm.userName,loginForm.password)
+   let data:any= await login(loginForm.userName,loginForm.password)
 
    if(data.code==200){
     userStore.token=data.data.token;
@@ -52,11 +53,11 @@ const onSubmit=async()=>{
         type: 'error',
     })
     
-    console.log(data.msg);
+  //  console.log(data.msg);
     
    }
 
-   console.log(data)
+//   console.log(data)
 }
 
 

@@ -9,10 +9,11 @@ export const useRoutesStore=defineStore("routesStore",{
     
     state:()=>{
         return{
+            layoutRouter:undefined,
             routes:[],
             addRoutes:[],
             defaultRoutes:[],
-            topbarRouters: [],  //边路由
+            topbarRouters: [],  //面包屑
             sidebarRouters: []  // 面包屑
         }
     },
@@ -52,12 +53,23 @@ export const useRoutesStore=defineStore("routesStore",{
               }
 
               router.addRoute(layout); //添加动态路由
-             //console.log(router.getRoutes());
              
-            // this.SET_ROUTES(routers);
-            //console.log(this.routes);
-    
+             let router404={  //设置4040
+                name:'404',
+                path:'/404',
+                component:()=> import("../views/404/idnex.vue")
+             }
+             let redirect404={
+              path:'/:pathMatch(.*)*',
+              redirect:'/404'
+             }
+
+            router.addRoute(router404) //添加404界面
+            router.addRoute(redirect404)
+            // console.log(layout.children);
+            this.layoutRouter=layout;
             this.routes=layout.children;
+            // console.log(router.getRoutes());
             callback()
         }        
     }
@@ -70,27 +82,28 @@ function buildRouterTree(menus:any){ //建立路由树
 
     let reChildren=[]
     menus.forEach((item:Record<string,any>,index:number)=>{
-      let child:any
-      if(item.children.length==0){
-        child={
-            id:item.id,
-            name:item.name,
-            path:item.path,
-            component:loadView(item.component),
-            meta:getComponentMeta(item)
+      if(item.status=='0'){
+        let child:any
+        if(item.children.length==0){
+          child={
+              id:item.id,
+              name:item.name,
+              path:item.path,
+              component:loadView(item.component),
+              meta:getComponentMeta(item)
+          }
+        }else{
+          child={
+              id:item.id,
+              name:item.name,
+              path:item.path,
+              children:buildRouterTree(item.children),
+              meta:getComponentMeta(item),
+          }
         }
-      }else{
-        child={
-            id:item.id,
-            name:item.name,
-            path:item.path,
-            children:buildRouterTree(item.children),
-            meta:getComponentMeta(item),
-        }
-      }
-      reChildren.push(child);
-     
-      
+        reChildren.push(child);
+      }  
+
     })
   
     return reChildren

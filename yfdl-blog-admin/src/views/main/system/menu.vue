@@ -32,7 +32,6 @@
       <el-row style="margin-top: 20px;">
         <el-table :data="menuList" style="width: 100%"  
         v-loading="loading"
-
         row-key="id"
         :default-expand-all="false" 
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -40,7 +39,7 @@
           <el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="160" />
           <el-table-column prop="icon" label="图标" width="100">
             <template #default="scope">
-            
+              <svg-icon  :icon-class="scope.row.icon"/>
             </template>
           </el-table-column>
           <el-table-column prop="orderNum" label="排序" width="60" />
@@ -204,6 +203,7 @@ import {useRoutesStore} from '@/stores/routesStore'
 
 
 let queryParams=ref<Record<string,any>>({})  //查询条件
+
 let menuOptions=ref<Array<Record<string,any>>>([]);
 let routesStore=useRoutesStore()
 
@@ -329,11 +329,6 @@ const getTreeselect=()=>{
   menuOptions.value.push(menu)
 
 }
-//取消按钮
-const cancel=()=>{
-      open.value = false
-      reset()
-}
 
 const getTree=(children:Array<Record<string,any>>)=>{
   let reChildren=[]
@@ -353,6 +348,13 @@ const getTree=(children:Array<Record<string,any>>)=>{
   return reChildren
 }
 
+//取消按钮
+const cancel=()=>{
+      open.value = false
+      reset()
+}
+
+
 
 const handleAdd=(row:any)=>{
   reset()
@@ -369,7 +371,7 @@ const handleAdd=(row:any)=>{
 //提交
 const submitForm =async()=>{
 
-  console.log(form.id);
+ // console.log(form.id);
   
 
   if(form.id){

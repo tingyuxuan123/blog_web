@@ -1,10 +1,14 @@
 <template>
 <Header>
     <template class="left" #header-left >
-        <span @click="a">
-            <el-icon v-if="!menuStore.isCollapse"><Fold /></el-icon>
-            <el-icon v-else><Expand /></el-icon>
-        </span>
+        <div class="left_1">
+            <span @click="a" style="margin-right:10px">
+                <el-icon v-if="!menuStore.isCollapse"><Fold /></el-icon>
+                <el-icon v-else><Expand /></el-icon>
+            </span>
+            <breadcrumb></breadcrumb>
+        </div>
+   
     </template>
 
     <template #header-right>
@@ -27,15 +31,17 @@
 </template>
 
 <script lang='ts' setup >
-import {reactive, ref} from 'vue'
-import { UserFilled } from '@element-plus/icons-vue'
 import Header from '@/components/header/header.vue';
+import breadcrumb  from '../../components/breadcrumb/index.vue'
 import {usemenuStore} from '@/stores/menuStore'
 import {useUserStore} from "@/stores/userStore"
+import {useRoutesStore} from '@/stores/routesStore'
 import { useRouter } from 'vue-router';
 
 let menuStore=usemenuStore()
 let userStore=useUserStore()
+let routesStore=useRoutesStore()
+
 const router=useRouter()
  
 let a=()=>{
@@ -47,11 +53,15 @@ let logout=()=>{
     //清空用户信息
     userStore.$reset();
     router.push("/login")
-    
+    routesStore.routes=[],
+    routesStore.layoutRouter=undefined;
+
 }
 
 let toUserInfo=()=>{
-    router.push("/layout/userInfo")
+    router.push({
+        name:'userinfo'
+    })
 }
 
 
@@ -63,5 +73,11 @@ let toUserInfo=()=>{
   }
   .left{
     cursor: pointer;
+  }
+
+  .left_1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

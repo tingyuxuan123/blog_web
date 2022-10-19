@@ -48,7 +48,7 @@ router.beforeEach((to,from,next)=>{
 
   if(userStore.token || to.name=="login"){
    
-    if(routesStore.routes.length==0 && to.name!="login"){
+    if(routesStore.layoutRouter==undefined && to.name!="login"){
 
       routesStore.GenerateRoutes(()=>{
         next({...to,replace:true}) //若果to不能找到对应的路由的话，会重新加载beforeEach

@@ -123,12 +123,12 @@ let handleDelete=(index:any,row:any)=>{
 
 //一页显示数量改变
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+ // console.log(`${val} items per page`)
 }
 
 //当前页改变
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
+//console.log(`current page: ${val}`)
 }
 
 //添加分类
@@ -138,11 +138,11 @@ const addCategory=()=>{
 
 const queryAllCategoryDetailList=async ()=>{
   const res= await getAllCategoryDetailList()
-  console.log(res);
+ // console.log(res);
   
 }
 
-queryAllCategoryDetailList();
+// queryAllCategoryDetailList();
 
 </script>
 
