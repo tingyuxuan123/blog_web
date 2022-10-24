@@ -22,3 +22,14 @@ export const getUserList=(queryParam:any)=>{
     return request("/user/userList",'get',{...queryParam})
 }
 
+export const updateUserInfo=(form:any)=>{   
+    return request("/user/updateUserInfo",'post',{
+        ...form
+    })
+}
+
+export const insertUser=(form:any)=>{
+    return request("/user/insertUser",'post',{
+        ...form
+    })
+}

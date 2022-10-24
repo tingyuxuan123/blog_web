@@ -1,20 +1,25 @@
 <template>
   
   <div class="login">
-    <el-form :model="loginForm" label-width="120px">
-        <el-form-item label="用户名:">
-            <el-input  v-model="loginForm.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="密码:">
-            <el-input v-model="loginForm.password"></el-input>
-        </el-form-item>
 
-        <el-form-item>
-        <el-button type="primary" @click="onSubmit">登录</el-button>
-        <el-button>注册</el-button>
-        </el-form-item>
+    <div class="box">
+      <div class="left">
 
-    </el-form>
+      </div>
+      <div class="right">
+          <h4>登录</h4>
+          <form action="#">
+              <input type="text" placeholder="用户名" class="input" v-model="loginForm.userName" />
+              <input type="password" placeholder="密码" class="input" v-model="loginForm.password" />
+              <input type="submit" value="Login" class="button" @click.prevent="onSubmit">
+          </form>
+          <div class="more">
+            <a href="#">注册账号</a>
+            <a href="#">找回密码</a>
+          </div>
+      </div>
+    </div>
+
   </div>
 
 </template>
@@ -64,14 +69,104 @@ const onSubmit=async()=>{
 </script>
 
 <style scoped lang='less'>
+
   .login{
-    margin-left:50%;
-    transform: translate(-50%,0);
-    width: 500px;
-    height: 400px;
-    border: 1px solid;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(120deg, #83C0E1 0%, #D6DCE9 100%) no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 16px;
+
+    .box{
+      width: 900px;
+      height: 550px;
+      border-radius: 15px;
+      background-color: rgba(255, 255, 255, .5);
+      box-shadow: 0 0 1rem 0.2rem rgba(0, 0, 0, 0.1);
+      display: flex;
+
+      .left{
+        width: 35%;
+        height: 100%;
+        background-color: #83c0E1;
+        border-radius: 15px 0 0 15px;
+        background-image: url("../../assets/images/2cy.jpg");
+        background-size: cover;
+        opacity: .85;
+      }
+
+      .right{
+        flex: 1;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-items: center;
+       
+        h4{
+           color: #7092C8;
+           font-size: 28px;
+           padding: 0px;
+           margin: 40px 0 0 0 ; 
+
+        }
+        
+        form {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        form .input{
+          outline: none;
+          width: 80%;
+          height: 36px;
+          padding: 10px 0 0 12px;
+          border: none;
+          border-bottom: 1px solid #7092C8;
+          background-color: transparent;
+          margin-top: 50px;
+
+          &::placeholder{
+          font-size: 18px; 
+          }
+        }
+
+        form .button{
+          outline: none;
+          width: 60%;
+          height: 50px;
+          margin-top: 50px;
+          border: none;
+          background-image: linear-gradient(120deg, #83C0E1 0%, #D6DCE9 100%);
+          text-align: center;
+          border-radius: 6px;
+          color: #FFFFFF;
+          font-size: 18px;
+          cursor: pointer;
+        }
+
+        .more{
+          width: 130%;
+          display: flex;
+          justify-content: space-around;
+          margin-top: 60px;
+
+          a{
+            color: #666;
+            text-decoration: none;
+            &:hover{
+              text-decoration:underline
+            }
+          }
+        }
+        
+      }
+
+    }
   }
+
 </style>

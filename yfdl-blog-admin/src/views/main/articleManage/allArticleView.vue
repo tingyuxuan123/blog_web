@@ -17,7 +17,7 @@
         </el-col>
         <el-col :span="5">
           <el-form-item label="分类目录">
-            <el-select v-model="form.categoryId" placeholder="请选择">
+            <el-select v-model="form.categoryId" placeholder="请选择" filterable>
               <template v-for="item in categoryList" :key="item.id">
                 <el-option :label="item.name" :value="item.id" />
               </template>
@@ -26,7 +26,7 @@
         </el-col>
         <el-col :span="5">
           <el-form-item label="标签目录">
-            <el-select v-model="form.spanId" placeholder="请选择">
+            <el-select v-model="form.spanId" placeholder="请选择" filterable>
               <template v-for="item in tagList" :key="item.id">
                 <el-option :label="item.name" :value="item.id" />
               </template>
@@ -48,7 +48,7 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-table :data="articleList" height="100%" style="width: 100%" >
+        <el-table :data="articleList" height="100%" style="width: 100%"   v-loading="loading">
           <el-table-column type="selection" width="50"/>
           <el-table-column prop="title" label="标题" :show-overflow-tooltip="true"/>
      
@@ -135,7 +135,7 @@ let router=useRouter()
 let categoryList=ref<Array<{id:number,name:string}>>([])
 let tagList=ref<Array<{id:number,name:string}>>([])
 let total=ref(0)
-
+let loading=ref(false)
 const form = reactive<{
   title: string,
   status: '0' | '1' | '',
@@ -149,9 +149,11 @@ const form = reactive<{
 })
 
 const queryAll=async ()=>{ //查询文章
+  loading.value=true
  const res= await queryArticleList(form,pageinfo);
  articleList.value=res.data.rows;
  total.value=res.data.total
+ loading.value=false
 }
 
 const getAllCategories=async ()=>{

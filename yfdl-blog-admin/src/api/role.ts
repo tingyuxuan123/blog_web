@@ -23,3 +23,7 @@ export const deleteRole=(roleId:any)=>{
         roleId
     })
 }
+
+export const roleListBySelect=()=>{
+    return request("/role/roleListBySelect",'get')
+}

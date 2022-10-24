@@ -5,7 +5,7 @@
   <el-row :gutter="20">
     <el-col :span="6">
       <el-form-item label="用户名称">
-        <el-input placeholder="请输入用户名称" v-model="queryParams.roleName"></el-input>
+        <el-input placeholder="请输入用户名称" v-model="queryParams.userName"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="5">
@@ -29,14 +29,14 @@
 
   <el-row :gutter="0">
 
-    <el-button :icon="Plus" type="primary" plain @click="addViewVisible=!addViewVisible">添加</el-button>
-    <el-button :icon="Delete" type="danger" plain>删除</el-button>
+    <el-button :icon="Plus" type="primary" plain @click="handleAdd">添加</el-button>
+    <!-- <el-button :icon="Delete" type="danger" plain>删除</el-button> -->
     <!-- <el-button :icon="Download" type="warning" plain>导出</el-button> -->
 
   </el-row>
 
   <el-row style="margin-top: 20px;">
-    <el-table :data="roleList" height="250" style="width: 100%"
+    <el-table :data="userList" max-height="400" style="width: 100%"
     
     v-loading="loading"
     row-key="id"
@@ -48,7 +48,7 @@
       <el-table-column align="center" prop="phonenumber" label="手机号码"  />
       <el-table-column align="center" prop="status" label="状态" >
         <template #default="scope">
-            <el-switch v-model="scope.row.status" active-value="0" inactive-value="1"/>
+            <el-switch v-model="scope.row.status" @change="(val:string)=>{updateStatusByUserId(val,scope.row)}" active-value="0" inactive-value="1"/>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="createTime" label="创建时间"  />
@@ -61,13 +61,13 @@
                       icon="Edit"
                       @click="handleUpdate(scope.row)"
                     >修改</el-button>
-                    <el-button
+                    <!-- <el-button
                       size="small"
                       type="primary"
                       text
                       icon="Delete"
                       @click="handleDelete(scope.row)"
-                    >删除</el-button>
+                    >删除</el-button> -->
                   </template>
                 </el-table-column>
     </el-table>
@@ -89,19 +89,81 @@
 
 </el-form>
 
-<el-dialog v-model="addViewVisible" title="添加分类" style="width: 600px;">
+<el-dialog v-model="ViewVisible" :title="title" style="width: 600px;">
 <el-form :model="form">
-  <el-form-item label="分类名" label-width="60px">
-    <el-input v-model="form.name" />
-  </el-form-item>
-  <el-form-item label="描述" label-width="60px">
-    <el-input v-model="form.name"  type="textarea" :rows="5" />
-  </el-form-item>
+  <el-row :gutter="20">
+    <el-col :span="24">
+      <el-form-item label="用户昵称" label-width="80px"> 
+          <el-input v-model="form.nickName"></el-input>  
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <el-form-item label="手机号码" label-width="80px"> 
+          <el-input v-model="form.phonenumber"></el-input>  
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="邮箱" label-width="80px"> 
+          <el-input v-model="form.email"></el-input>  
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <el-form-item label="用户名称" label-width="80px"> 
+          <el-input v-model="form.userName"></el-input>  
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="角色权限" label-width="80px"> 
+        <el-select v-model="form.roleId" placeholder="请选择">
+          <el-option v-for="role in roleList" :label="role.roleName" :value="role.id" />
+       
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <!-- <el-col :span="12">
+      <el-form-item label="用户密码" label-width="80px"> 
+          <el-input v-model="form.password"></el-input>  
+      </el-form-item>
+    </el-col> -->
+  </el-row>
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <el-form-item label="用户性别" label-width="80px"> 
+        <el-select v-model="form.sex" placeholder="请选择">
+          <el-option label="男" value="0" />
+          <el-option label="女" value="1" />
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="状态" label-width="80px"> 
+        <el-radio-group v-model="form.status">
+          <el-radio :key="'0'" :label="'0'">正常</el-radio>
+          <el-radio :key="'1'" :label="'1'">停用</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row :gutter="20">
+    <!-- <el-col :span="12">
+      <el-form-item label="角色权限" label-width="80px"> 
+        <el-select v-model="form.roleId" placeholder="请选择">
+          <el-option v-for="role in roleList" :label="role.roleName" :value="role.id" />
+       
+        </el-select>
+      </el-form-item>
+    </el-col> -->
+  </el-row>
+
 </el-form>
 <template #footer>
   <span class="dialog-footer">
-    <el-button @click="addViewVisible=false">取消</el-button>
-    <el-button type="primary" @click="addRole">添加</el-button>
+    <el-button @click="ViewVisible=false">取消</el-button>
+    <el-button type="primary" @click="submit">提交</el-button>
   </span>
 </template>
 </el-dialog>
@@ -111,27 +173,79 @@
 
 <script lang='ts' setup name="role">
 import { Plus, Delete, Search, Download ,RefreshLeft} from '@element-plus/icons-vue'
-import {reactive, ref} from 'vue'
-import {getUserList} from '@/api/user'
+import {nextTick, reactive, ref} from 'vue'
+import {getUserList,updateUserInfo,insertUser} from '@/api/user'
+import {roleListBySelect,} from '@/api/role'
+import { ElMessage } from 'element-plus';
 
 let queryParams=ref<Record<string,any>>({
     currentPage:1,
     pageSize:10
 })  //查询条件
-let addViewVisible=ref(false);
+let ViewVisible=ref(false);
+let userList=ref<{[key:string]:any,}[]>([])
 let roleList=ref<{[key:string]:any,}[]>([])
 let loading=ref(false)
 let pageInfo=reactive({
     total:0
 })
 
-//编辑
-let handleUpdate=(row:any)=>{
+let title=ref("")
 
+
+let form=reactive({
+  id:undefined,
+  userName:undefined,
+  nickName:undefined,
+  email:undefined,
+  phonenumber:undefined,
+  sex:'0',
+  status:'0',
+  roleId:undefined
+})
+
+//编辑
+
+let handleUpdate=(row:any)=>{
+  console.log(row);
+  
+title.value="修改用户信息"
+form.id=row.id;
+form.userName=row.userName
+form.nickName=row.nickName
+form.email=row.email
+form.status=row.status
+form.phonenumber=row.phonenumber;
+form.roleId=row.roleId
+form.sex=row.sex
+
+ViewVisible.value=true
 }
 
 //删除
 let handleDelete=(row:any)=>{
+
+}
+
+
+
+let handleAdd=()=>{
+  title.value="添加角色"
+  resetForm()
+  ViewVisible.value=true
+}
+
+const resetForm=()=>{
+
+  form.id=undefined,
+  form.userName=undefined,
+  form.nickName=undefined,
+  form.email=undefined,
+  form.phonenumber=undefined,
+  form.sex='0',
+  form.status='0',
+  form.roleId=undefined
+
 
 }
 
@@ -141,7 +255,7 @@ const handleSearch=()=>{
 
 const handleReset=()=>{
 queryParams.value.phonenumber=undefined
-queryParams.value.roleName=undefined
+queryParams.value.userName=undefined
 queryParams.value.status=undefined
 getuserList()
 }
@@ -149,18 +263,16 @@ getuserList()
 const getuserList=async()=>{ //获取角色列表
 loading.value=true
 const res=await getUserList(queryParams.value)
-pageInfo.total=res.data.total
-roleList.value=res.data.rows
 
+pageInfo.total=res.data.total
+userList.value=res.data.rows
 
 loading.value=false;
 }
 
 getuserList();
 
-const addRole=()=>{
 
-}
 
 //一页显示数量改变
 const handleSizeChange = (val: number) => {
@@ -172,6 +284,56 @@ const handleCurrentChange = (val: number) => {
  // console.log(`current page: ${val}`)
 }
 
+const getRoleListbySelect=async()=>{
+  const res:any= await roleListBySelect();
+  roleList.value=res.data
+
+
+  
+  
+}
+getRoleListbySelect();
+
+
+//提交
+const submit=async ()=>{
+   // console.log(form);
+    if(form.id){ //id 存在添加，反之修改
+      const res= await updateUserInfo(form);
+
+      ElMessage({
+      showClose: true,
+      message: '修改成功',
+      type: 'success',
+      })
+
+    }else{
+      const res=await insertUser(form)
+      ElMessage({
+      showClose: true,
+      message: '添加成功',
+      type: 'success',
+      })
+    }
+
+ 
+    resetForm();
+
+    getuserList(); 
+
+
+    ViewVisible.value=false;
+}
+
+//改变状态
+const updateStatusByUserId=async (status:string,row:any)=>{
+  const res=await updateUserInfo({id:row.id,status});
+      ElMessage({
+      showClose: true,
+      message: '状态改变成功',
+      type: 'success',
+      })  
+}
 
 
 

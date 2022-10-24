@@ -206,7 +206,7 @@ const disabled = ref(false)
 
 
 const handleRemove = (file: UploadFile) => { //移除
-    console.log(article.thumbnail)
+    //console.log(article.thumbnail)
 }
 
 const handlePictureCardPreview = (file: UploadFile) => { //查看图片
@@ -222,7 +222,7 @@ const handleDownload = (file: UploadFile) => {  //文件下载
 
 watch(() => route.query, () => {
 
-  console.log("aid又值", aId.value);
+  //("aid又值", aId.value);
 
 }, { deep: true })
 
@@ -246,7 +246,7 @@ const handleSubmit =async() => {
       type: 'warning',
       })
     }
-    console.log(res);
+   // console.log(res);
     
 
   }else{ //添加
@@ -271,7 +271,7 @@ const handleSubmit =async() => {
 
 //
 const addImg =async (pos:any, file:any) => {
-  console.log(pos,file);
+ // console.log(pos,file);
   const res= await uploadImg(file)
   
   md.value.$img2Url(pos,res.data)
