@@ -127,14 +127,14 @@ let updatepas=async ()=>{
         width: 100%;
         height: 100%;
         padding: 8px;
-        box-sizing: content-box;
+        box-sizing: border-box;
         display: flex;
         
         .userinfo_left{
             display: flex;
             flex-direction: column;
             padding: 15px;
-            box-sizing: content-box;
+            box-sizing: border-box;
             align-items: center;
             flex: 4;
             background-color: #fff;
