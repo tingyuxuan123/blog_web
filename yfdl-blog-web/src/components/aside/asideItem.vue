@@ -16,6 +16,7 @@ import {reactive, ref} from 'vue'
 
 <style scoped lang='scss'>
   .aside-item{
+    border-radius: 5px;
     width: 100%;
     background-color: var(--theme-bg4-color);
     margin-bottom: 15px;

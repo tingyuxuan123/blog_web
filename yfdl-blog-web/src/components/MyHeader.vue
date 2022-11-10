@@ -22,7 +22,20 @@
       :active-icon="Check"
       :inactive-icon="Close"
       />
-    <el-button type="primary" plain>登录</el-button>
+    <el-button v-if="!userStore.token" type="primary" plain @click="loginClick">登录/注册</el-button>
+    <di v-else>
+      <el-dropdown>
+          <el-avatar :size="30" :src="userStore.userInfo?userStore.userInfo.avatar:''" />
+          <el-avatar ></el-avatar>
+          <template #dropdown>
+          <el-dropdown-menu>
+              <el-dropdown-item @click="toUserInfo">个人资料</el-dropdown-item>
+              <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+          </template>
+      </el-dropdown>
+            
+    </di>
 
     </div>
     </div>
@@ -35,8 +48,11 @@
 import {reactive, ref} from 'vue'
 import { Check, Close, Search} from '@element-plus/icons-vue'
 import MyMenu from '@/components/common/menu.vue'
+import {usescrollStore} from '@/stores/useScroll'
+import {useUserStore} from '@/stores/userStore'
+import {logout} from "@/api/login"
 let theme=ref<string>("light")
-
+const userStore=useUserStore();
 type Menu={
   menuname:string,
   path:string;
@@ -66,8 +82,21 @@ let menuList=ref<Menu[]>([
   }
 ])
 
+const scrollStore=usescrollStore()
+const loginClick=()=>{
+  scrollStore.isVisibleLoginForm=true;
+}
 
+const handleLogout=async ()=>{
 
+  let res = await logout();
+  userStore.$reset();
+
+}
+
+const toUserInfo=()=>{
+
+}
 
 </script>
 

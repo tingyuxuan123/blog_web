@@ -17,13 +17,15 @@
     --theme-text4-color:#86909c;  /* 文章列表概括 */
     --theme-text5-color:#1e80ff;  /* tag 标签 */
     --theme-text6-color:#8a919f;
+    --theme-text7-color:#7dbaff;
+    
     
     --theme-text-active-color:#1e80ff;
     --theme-text-hover-color:#a0cfff;
 
     --theme-block-hover-color:#fafafa;
     --theme-block-hover-bg-color:#f7f8fa;
-
+  
     --theme-bg1-color:#EBEDF0;
     --theme-bg2-color:#F0F2F5;
     --theme-bg3-color:#FAFAFA;
@@ -31,6 +33,9 @@
     --theme-bg5-color:#eaf2ff;
     --theme-bg6-color:#f7f8fab3;
     --theme-bg7-color:#f2f3f5;
+    --theme-bg8-color:#ddedff;
+    --theme-bg9-color:#1e80ff;
+    --theme-bg10-color:#c2c8d1;
 
     --theme-border1-color:#00000021;
     --theme-border2-color:#97979733;

@@ -26,15 +26,16 @@
       
       box-sizing: border-box;
       .content-left{
-          width: 68.5%;
+          /* width: 68.5%; */
           /* background-color: var(--theme-bg4-color); */
-     
+       width: 780px;
       }
   
       .content-right{
-         width: 30%;
+         /* width: 30%; */
          /* background-color: var(--theme-bg4-color); */
-
+        margin-left: 20px;
+        width: 300px;
       }
   }
   

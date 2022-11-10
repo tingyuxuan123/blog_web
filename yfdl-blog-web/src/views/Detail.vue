@@ -17,10 +17,56 @@
           </div>
         </div>
         <my-comment v-if="detail.id" :article-id="detail.id"></my-comment>
+        <div class="article-suspended-panel">
+       
+            <el-badge :value="detail.likesCount" class="">
+             <span> <i class="iconfont icon-like"></i></span>
+            </el-badge>
+
+            <el-badge :value="detail.commentCount" class="">
+             <span> <i class="iconfont icon-chat"></i></span>
+            </el-badge>
+             <span> <svg-icon iconClass="collect2"></svg-icon></span>
+       
+
+       </div>
+      
       </template>
       <template #right>
         <myaside>
           <template #default>
+            <!-- 用户信息 -->
+            <aside-item class="userinfo">
+              <template #header>
+                  <div class="userinfo-top">
+                      <div>
+                        <img class="avatar" :src="userInfo.avatar" alt="">
+                        <div class="userinfo-top-left">
+                            <span class="nickName">{{userInfo.nickName}}</span>
+                            <span class="label"> <i v-if="userInfo.label">{{userInfo.label}}</i> <i v-else>这个人很神秘，什么都没留下</i> </span>
+                        </div>
+                      </div>
+                      <div>
+                        <el-button v-if="!userInfo.isFollow">关注</el-button>  <el-button class="hasFollow" v-else>已关注</el-button> 
+                        <el-button>私信</el-button>
+                      </div>
+
+                  </div>
+              </template>
+              <template #content>
+                  <div class="userinfo-bottom">
+                    <div>
+                      <span> <i class="iconfont icon-like"></i> 获赞点击</span> <span>{{userInfo.likesCount}}</span>
+
+                    </div>
+                    <div>
+                      <span> <i class="iconfont icon-eye"></i> 文章被阅读</span> <span>{{userInfo.readCount}}</span>
+                    </div>
+                   
+                  </div>
+              </template>
+            </aside-item>
+            <!-- 相关文章 -->
             <aside-item>
               <template #header>
                 相关文章
@@ -48,15 +94,16 @@
         </myaside>
       </template>
     </my-content>
-    
+
   </div>
 </template>
 
 <script lang='ts' setup >
 import {nextTick, reactive, ref,computed,onMounted,onUnmounted} from 'vue'
 import {useRoute} from 'vue-router'
-import {articleDetail} from '@/api/article'
-import type {ArticleDetail} from '@/api/apiType'
+import {articleDetail,updateViewCount} from '@/api/article'
+import type {ArticleDetail,AuthorInfoByArticle} from '@/api/apiType'
+import {authorInfoByArticle} from '@/api/user'
 import md from '@/components/MD.vue'
 import MyContent from '@/components/MyContent.vue'
 import myaside from '../components/aside/aside.vue';
@@ -64,6 +111,7 @@ import ArticleUser from '../components/Detail/articleUser.vue'
 import catalogueVue from '@/components/Detail/catalogue.vue'
 import AsideItem from '@/components/aside/asideItem.vue'
 import MyComment from '@/components/comment/MyComment.vue'
+import {copy} from '@/utils/copyObject'
 
 
 const route=useRoute();
@@ -86,6 +134,17 @@ let detail=ref<ArticleDetail>({
     content:undefined,
     isComment:undefined
 });
+
+let userInfo=reactive<AuthorInfoByArticle>({
+    id:undefined,
+    avatar: undefined,
+    isFollow: false,
+    label: undefined,
+    likesCount: undefined,
+    nickName: undefined,
+    readCount: undefined,
+});
+
 let cataloguesRef=ref(null)
 
   type Info={
@@ -121,6 +180,7 @@ const getarticleDetail=async()=>{
 
 }
 
+
 getarticleDetail();
 
 const getCatalogue=(catalogue:any)=>{
@@ -135,6 +195,25 @@ let isFixed=ref(false)
 
 //吸顶实现
 let catalogueDom=ref(null)
+
+
+//获取用户信息
+const getAuthorInfoByArticle=async ()=>{
+  const res:any = await authorInfoByArticle(id as string);
+  copy(res.data,userInfo)
+  // console.log(userInfo);
+  
+}
+
+getAuthorInfoByArticle()
+
+
+//更新文章观看量；
+const updateView=async ()=>{
+  const res:any =await updateViewCount(id as string);  
+}
+
+updateView();
 
 
 onMounted(() => {
@@ -154,6 +233,9 @@ const handleScroll = () => {
   isFixed.value= scrollTop-15 > catalogueDom.value.getBoundingClientRect().top ? true : false
   //isFixed.value = scrollTop > 133? true : false;
 };
+
+
+
 
 </script>
 
@@ -205,6 +287,49 @@ const handleScroll = () => {
     }
   
   }
+
+  .article-suspended-panel{
+    display: flex;
+    flex-direction: column;
+      position: fixed;
+      margin-left: -7rem;
+      top: 140px;
+      z-index: 2;
+    
+     ::v-deep(.el-badge__content){
+        top: 8px;
+        background-color: var(--theme-bg10-color);
+      
+      }
+
+      span{
+        cursor: pointer;
+        display: flex;
+        background-color: var(--theme-bg4-color);
+        justify-content: center;
+        align-items: center;
+        border-radius: 999px;
+        width: 40px;
+        height: 40px;
+        color: var(--theme-text4-color);
+        font-size: 18px;
+        margin-bottom: 15px;
+        i{
+          font-size: 18px;
+
+          &:hover{
+            color: var(--theme-text3-color);
+          }
+        }
+        
+        svg:hover{
+          color: var(--theme-text3-color);
+        }
+        
+      }
+
+    }
+
 }
 .title{
   font-size: 28px;
@@ -213,10 +338,103 @@ const handleScroll = () => {
 .catalogue_sticky{
   position: fixed;
   box-sizing: border-box;
-  width:330px;
+  width: 300px;
   top: 68px;
   background-color: var(--theme-bg4-color);
 
 }
+
+.userinfo{
+  .userinfo-top{
+    div:first-child{
+      display: flex;
+      
+
+      .avatar{
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      margin-right: 10px;
+    }
+
+    .userinfo-top-left{
+      flex: 1 1 auto;
+      min-width: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      span {
+        font-size: 12px;;
+        overflow: hidden;  //超出文本隐藏
+        white-space: nowrap;  //不换行，只显示一行
+        text-overflow: ellipsis;  //超出部分省略号显示
+      }
+
+    }
+
+    }
+
+    &>div:last-child{
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-evenly;
+
+      button{
+        width: 120px;
+
+        &:first-child{
+          background-color:var(--theme-bg9-color);
+          color: var(--theme-bg1-color);
+        }
+        &:last-child{
+          background-color:var(--theme-bg5-color);
+          color: var(--theme-text5-color);
+        }
+      }
+
+      .hasFollow{
+        background-color: var(--theme-bg1-color) !important;
+        color: var(--theme-text2-color) !important;
+      }
+
+    }
+
+
+  }
+
+  
+  .userinfo-bottom{
+    display: flex;
+    flex-direction: column;
+    div:first-child{
+      margin-bottom: 8px;
+    }
+
+    span {
+      font-size: 14px;
+
+      i {
+        display: inline-flex;
+        width: 25px;
+        height: 25px;
+        background-color: var(--theme-bg8-color);
+        color: var(--theme-text7-color);
+        border-radius: 999px;
+        justify-content: center;
+        align-items: center;
+
+
+      }
+      
+    }
+
+
+
+  }
+  
+
+}
+
   
 </style>

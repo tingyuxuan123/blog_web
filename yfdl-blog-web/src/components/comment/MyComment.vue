@@ -1,6 +1,15 @@
 <template>
   <div class="myComment">
     <h1>评论</h1>
+    <div class="sendComment" v-if="userStore.token">
+      <div class="img"><img :src="userStore.userInfo.avatar" alt=""></div> <send-comment @sendClick="getComment" :commentInfo="sendCommentinfo"></send-comment>
+    </div>
+    <div class="sendComment" v-else>
+      <div class="img"><img src="@/assets/icons/svg/notlogin.svg" alt=""></div> <div class="tip">
+        还为登录，快<span @click="scrollStore.isVisibleLoginForm=true">登录</span>发表一下感受吧~
+      </div>
+    </div>
+    
     <div v-if="comments.length>0" class="comment-item" v-for="comment in comments">
         <img :src="comment.avatar" alt="">
         <div class="content">
@@ -8,13 +17,14 @@
             <span class="username"> {{comment.username}}</span>
             <span class="createTime">{{formatting(comment.createTime)}}</span>
           </div>
-          <div class="content-comment">
-            {{comment.content}}
+          <div class="content-comment" v-html="comment.content">
+           
           </div>
           <div class="content-footer">
             <span> <svg-icon iconClass="likes"></svg-icon> {{ '点赞' }}</span>
-            <span>  <svg-icon iconClass="message"></svg-icon> {{comment.children.length >0 ? comment.children.length : '回复'}}</span>
+            <span  @click="replyClick(comment)">  <svg-icon iconClass="message"></svg-icon> {{comment.children.length >0 ? comment.children.length : '回复'}}</span>
           </div>
+          <send-comment v-if="replyId==comment.id" @sendClick="getComment" :commentInfo="sendReply"></send-comment>
           <div class="replys" v-if='comment.children.length>0'>
               <div class="comment-item" v-for="reply in comment.children">
                 <img :src="reply.avatar" alt="">
@@ -23,13 +33,15 @@
                     <span class="username"> {{reply.username}} 回复 {{reply.toCommentUserName }} </span>
                     <span class="createTime">{{formatting(reply.createTime)}}</span>
                   </div>
-                  <div class="content-comment">
-                    {{reply.content}}
+                  <div class="content-comment" v-html="reply.content">
+                   
                   </div>
                   <div class="content-footer">
                     <span> <svg-icon iconClass="likes"></svg-icon> {{ '点赞' }}</span>
-                    <span>  <svg-icon iconClass="message"></svg-icon> {{ '回复'}}</span>
+                    <span @click="replyClick2(reply,comment.id)">  <svg-icon iconClass="message" ></svg-icon> {{ '回复'}}</span>
+                    <send-comment v-if="replyId==reply.id" @sendClick="getComment" :commentInfo="sendReply"></send-comment>
                   </div>
+                
                 </div>
               </div>
           </div>
@@ -37,7 +49,11 @@
 
     
     </div>
-    <send-comment v-else></send-comment>`
+
+    
+
+    
+
     
   </div>
 </template>
@@ -48,6 +64,14 @@ import type {CommentInfo} from '@/api/apiType'
 import {commentList} from '@/api/comment'
 import {formatting} from '@/utils/time'
 import SendComment from './sendComment/SendComment.vue'
+import {useUserStore} from '@/stores/userStore'
+import {usescrollStore} from '@/stores/useScroll'
+import type {SendCommentInfo} from '@/api/apiType'
+import {useRoute} from 'vue-router'
+
+const userStore=useUserStore();
+const scrollStore=usescrollStore()
+const route=useRoute();
 
 type Props={
     articleId:number
@@ -57,6 +81,27 @@ let pageinfo={
   pageNum:1,
   pageSize:10
 }
+
+let replyId=ref(0);
+
+
+let sendCommentinfo=reactive<SendCommentInfo>({
+  articleId:parseInt(route.params.id as string),
+  type: 0,
+  rootId: -1,
+  toCommentId: -1,
+  toCommentUserId: -1,
+  content:""
+})
+
+let sendReply=reactive<SendCommentInfo>({
+  articleId:parseInt(route.params.id as string),
+  type: 0,
+  rootId: -1,
+  toCommentId: -1,
+  toCommentUserId: -1,
+  content:""
+})
 
 let comments=ref<CommentInfo[]>([])
 
@@ -76,17 +121,68 @@ const getComment=async ()=>{
 
 getComment();
 
+const replyClick=(comment:CommentInfo)=>{
+  console.log(comment);
+  
+  replyId.value=comment.id
+
+  sendReply.rootId=comment.id;
+  sendReply.toCommentId=comment.id;
+  sendReply.toCommentUserId=comment.createBy;  
+
+}
+
+const replyClick2=(comment:CommentInfo,rootId:number)=>{
+  console.log(comment);
+  
+  replyId.value=comment.id
+
+  sendReply.rootId=rootId;
+  sendReply.toCommentId=comment.id; //被评论的的评论id
+  sendReply.toCommentUserId=comment.createBy;   //背评论的人
+
+}
+
 
 </script>
 
 <style scoped lang='scss'>
+.sendComment{
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  .img{
+    width: 60px;
+    img{
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+    }
+  }
+
+}
   .myComment{
+    flex: 1;
     margin-top: 20px;
     background-color: var(--theme-bg4-color);
     width: 100%;
     /* height: 500px; */
     box-sizing: border-box;
     padding: 20px;
+
+    .tip{
+      width: 100%;
+      height: 70px;
+      line-height: 70px;
+      text-align: center;
+      background-color: #f2f3f5;
+
+      span{
+        color: var(--theme-text5-color);
+        margin: 0px 5px;
+        cursor: pointer;
+      }
+    }
 
     h1{
       font-size: 18px;
@@ -131,6 +227,7 @@ getComment();
           span {
             margin-right: 10px;
             font-size: 14px;
+            cursor: pointer;
           }
         }
         

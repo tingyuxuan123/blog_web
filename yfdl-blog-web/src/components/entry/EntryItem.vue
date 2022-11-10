@@ -55,6 +55,8 @@ type Props={
 
 
 const handleClick=()=>{
+
+  
   router.push({
     name:'detail',
     params:{

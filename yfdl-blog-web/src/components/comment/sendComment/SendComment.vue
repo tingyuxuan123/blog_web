@@ -2,14 +2,14 @@
   <div class="sendComment">
  
     <div class="content">
-        <div class="input" contenteditable placeholder="请输入评论"></div>
+        <div class="input" contenteditable placeholder="请输入评论" ref="commentinput"></div>
         <div class="footer">
           <div class="emjoys"  :class="{visible:isVisible}"> <span class="emjoybtn" @click="emjoybtnClick"><svg-icon iconClass="表情"></svg-icon> 表情</span>  
             <div class="emjoyForm">
                <div class="list">
                   <div class="item" v-for="item in emjoys">
                     <span>
-                      <img :src="item.url" alt="">
+                      <img :src="item.url" alt="" @click="emjoyClick(item.url)">
                     </span>
                   </div>                
                </div>
@@ -17,7 +17,7 @@
 
           </div>
           <div class="sure">
-            <el-button type="primary">评论</el-button>
+            <el-button type="primary" @click="commentClick">评论</el-button>
           </div>
         </div>
     </div>
@@ -25,15 +25,24 @@
 </template>
 
 <script lang='ts' setup >
-import {reactive, ref ,onMounted,onUnmounted} from 'vue'
+import {reactive, ref ,onMounted,onUnmounted, Prop} from 'vue'
+import {comment} from "@/api/comment"
+import type {SendCommentInfo} from '@/api/apiType'
+import {useUserStore} from '@/stores/userStore'
+import { Message } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+const userStore= useUserStore()
 let emjoys=ref([])
 
 let isVisible=ref(false)
 
 type Props={
-   
+  commentInfo:SendCommentInfo
         
 }
+
+ let props= defineProps<Props>()
+ let emits= defineEmits(["sendClick"])
 
 let getEmojys=()=>{
   const modulesFiles=import.meta.glob("@/components/comment/sendComment/emjoy/*.png")
@@ -58,8 +67,43 @@ const emjoybtnClick=()=>{
  
 }
 
+const commentinput=ref<HTMLElement>(null);
 
+const commentClick= async()=>{
+  if(commentinput.value.innerHTML==null ||commentinput.value.innerHTML==""){
+      ElMessage({
+        message:"评论不能为空",
+        type:"warning"
+      })
+  }
+  
+  // let commentValue=commentinput.value.textContent
+  let commentValue=commentinput.value.innerHTML;
+  commentinput.value.textContent=""
 
+  let data:SendCommentInfo={
+    "articleId": props.commentInfo.articleId,
+    "type": props.commentInfo.type,
+    "rootId": props.commentInfo.rootId,
+    "toCommentId": props.commentInfo.toCommentId,
+    "toCommentUserId": props.commentInfo.toCommentUserId,
+    "content": commentValue
+  }
+
+  
+   const res= await comment(data)
+   emits('sendClick')
+}
+
+const emjoyClick=(url:string)=>{
+  let imgElE =document.createElement('img')
+  imgElE.setAttribute("src",url);
+  imgElE.className="needSendImg"
+  imgElE.style.width="16px";
+  imgElE.style.height="16px"
+  imgElE.style.verticalAlign="text-top"
+  commentinput.value.append(imgElE);
+}
 
 
 
@@ -67,7 +111,7 @@ const emjoybtnClick=()=>{
 
 <style scoped lang='scss'>
   .content{
-
+      width: 100%;
 
     .footer{
       margin-top: 8px;
@@ -104,7 +148,10 @@ const emjoybtnClick=()=>{
     line-height: 22px;
     font-size: 14px;
     resize: both;
+    vertical-align: middle;
+ 
   }
+  
 .emjoyForm{
     display: none;
     position: absolute;

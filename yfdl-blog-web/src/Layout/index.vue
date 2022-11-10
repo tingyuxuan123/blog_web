@@ -9,6 +9,9 @@
 <footer>
 
 </footer>
+
+<login></login>
+
 </div>
 
 </template>
@@ -17,7 +20,7 @@
 import {reactive, ref} from 'vue'
 import MyHeader from '@/components/MyHeader.vue'
 import MyFooter from '@/components/MyFooter.vue'
-// import Home from '@/views/home.vue'
+import login from '@/views/login.vue'
 
 </script>
 
@@ -25,6 +28,7 @@ import MyFooter from '@/components/MyFooter.vue'
   .layout{
     width: 100vw;
     height: 100%;
+    min-height: 100vw;
     background-color: var(--theme-bg1-color);
 
     header{
@@ -34,6 +38,7 @@ import MyFooter from '@/components/MyFooter.vue'
     }
 
     main{
+      
       width: 100%;
       height: 100%;
       box-sizing: border-box;

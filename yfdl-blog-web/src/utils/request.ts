@@ -5,7 +5,9 @@
 
 import axios from 'axios'
 import {useUserStore} from "@/stores/userStore"
+import {usescrollStore} from '@/stores/useScroll'
 import router from '@/router'
+import { ElMessage } from 'element-plus'
 export const baseURL:string="http://127.0.0.1:7777/"
 
 
@@ -35,17 +37,14 @@ instance.interceptors.request.use((config)=>{
 instance.interceptors.response.use((res)=>{
     const userStore = useUserStore()
     if(res.data.code === 401){
+      let scrollStore = usescrollStore()
         userStore.$reset(); //清空用户数据
-        //js模块中：router.currentRoute.value.fullPath
-        const fullPath:string=encodeURIComponent(router.currentRoute.value.fullPath);
-        //encodeURIComponent 转换url编码，防止解析时出现问题
-        router.push("/login?redirectUrl="+fullPath)        
-
+          
         ElMessage({
             message: res.data.msg,
             type: 'warning',
           })
-
+     scrollStore.isVisibleLoginForm=true;  //跳出登录界面
     }
 
     return res.data

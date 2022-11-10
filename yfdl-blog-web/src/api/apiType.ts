@@ -1,3 +1,5 @@
+import { type } from "os"
+
 export  type ArticleListInfo={
     id:number,
     categoryName:string,
@@ -55,4 +57,23 @@ export type CommentInfo ={
     toCommentUserName:string,
     toCommentUserId:number
 
+}
+
+export type SendCommentInfo ={
+    "articleId": number,
+    "type": number,
+    "rootId": number,
+    "toCommentId": number,
+    "toCommentUserId": number,
+    "content":string
+}
+
+export type AuthorInfoByArticle ={
+    id:number,
+    avatar:string,
+    isFollow:boolean,
+    label:string,
+    likesCount:number,
+    nickName:string,
+    readCount:number
 }

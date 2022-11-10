@@ -140,7 +140,7 @@ const emits = defineEmits(['handleCatalogue'])
   })
 
   // console.log(jump);
-  console.log(catalogues);
+  // console.log(catalogues);
 
   return catalogues;
   

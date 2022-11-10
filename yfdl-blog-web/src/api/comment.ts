@@ -6,3 +6,11 @@ export const commentList=(pageinfo:any,articleId:number)=>{
         articleId
     })
 }
+
+
+export const comment=(comment:any)=>{
+    return request(`/comment`,"post",{
+        ...comment
+    })
+}
+

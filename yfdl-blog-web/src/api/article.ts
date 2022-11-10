@@ -14,3 +14,7 @@ export const articleList=(queryParams:any,pageinfo:any)=>{
 export const articleDetail=(id:string)=>{
     return request(`/article/${id}`,"get")
 }
+
+export const updateViewCount=(id:string)=>{
+    return request(`/article/updateViewCount/${id}`,"put")
+}
