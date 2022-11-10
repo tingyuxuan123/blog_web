@@ -4,7 +4,7 @@
       <template #left>
         <div class="left">
           <h1 class="title">{{detail.title}}</h1>
-          <article-user class="article-user" v-if="info?.createBy"  :info="info" ></article-user>
+          <article-user class="article-user" v-if="info?.createBy" :info="info" ></article-user>
           <img class="article-thumbnail" :src="detail.thumbnail" alt="">
           <md v-if="detail?.content !=undefined " :content="detail.content" @handle-catalogue="getCatalogue"></md>
           <div class="categoryInfo">
@@ -233,6 +233,33 @@ const handleScroll = () => {
   isFixed.value= scrollTop-15 > catalogueDom.value.getBoundingClientRect().top ? true : false
   //isFixed.value = scrollTop > 133? true : false;
 };
+
+//添加关注
+const follow =(userid:number)=>{
+  if (userInfo.isFollow){
+    //关注时点击，取消关注
+
+  }else{
+    //没有关注时，添加关注
+
+  } 
+}
+
+//点赞
+const Likes=()=>{
+
+}
+
+//收藏
+const collect =()=>{
+
+  
+}
+
+//去评论 
+const toComment =()=>{
+
+}
 
 
 
