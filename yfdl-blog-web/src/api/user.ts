@@ -5,3 +5,9 @@ export const authorInfoByArticle=(articleId:string)=>{
         articleId
     })
 }
+
+export const userInfoByHomePage=(userId:number)=>{
+    return request("/user/userInfoByHomePage","get",{
+        userId
+    })
+}

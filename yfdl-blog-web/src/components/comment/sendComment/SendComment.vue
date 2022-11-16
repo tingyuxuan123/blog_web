@@ -2,7 +2,7 @@
   <div class="sendComment">
  
     <div class="content">
-        <div class="input" contenteditable placeholder="请输入评论" ref="commentinput"></div>
+        <div class="input" contenteditable placeholder="请输入评论" ref="commentinput" @click="inputClick"></div>
         <div class="footer">
           <div class="emjoys"  :class="{visible:isVisible}"> <span class="emjoybtn" @click="emjoybtnClick"><svg-icon iconClass="表情"></svg-icon> 表情</span>  
             <div class="emjoyForm">
@@ -105,6 +105,9 @@ const emjoyClick=(url:string)=>{
   commentinput.value.append(imgElE);
 }
 
+const inputClick=()=>{
+  isVisible.value=false;
+}
 
 
 </script>

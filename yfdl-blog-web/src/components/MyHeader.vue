@@ -29,7 +29,7 @@
           <el-avatar ></el-avatar>
           <template #dropdown>
           <el-dropdown-menu>
-              <el-dropdown-item @click="toUserInfo">个人资料</el-dropdown-item>
+              <el-dropdown-item @click="toUserInfo">个人主页</el-dropdown-item>
               <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
           </template>
@@ -51,6 +51,9 @@ import MyMenu from '@/components/common/menu.vue'
 import {usescrollStore} from '@/stores/useScroll'
 import {useUserStore} from '@/stores/userStore'
 import {logout} from "@/api/login"
+import {useRouter,useRoute} from 'vue-router'
+
+
 let theme=ref<string>("light")
 const userStore=useUserStore();
 type Menu={
@@ -93,9 +96,16 @@ const handleLogout=async ()=>{
   userStore.$reset();
 
 }
+let router= useRouter()
 
 const toUserInfo=()=>{
-
+  let {href}= router.resolve({
+    name:'user',
+    params:{
+      id: userStore.userInfo.id
+    }
+  })
+  window.open(href,"_blank");
 }
 
 </script>

@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="right">
-            <el-button type="primary" plain>关注</el-button>
+            <!-- <el-button type="primary" plain>关注</el-button> -->
         </div>
         
     </div>

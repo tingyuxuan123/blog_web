@@ -117,6 +117,7 @@ const loginClick=async()=>{
       type:'success'
     })
     scrollStore.isVisibleLoginForm=false;
+    location.reload()
   }
 
 }

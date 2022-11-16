@@ -16,17 +16,17 @@
               </div>
           </div>
         </div>
-        <my-comment v-if="detail.id" :article-id="detail.id"></my-comment>
+        <my-comment v-if="detail.id" :article-id="detail.id" ref="myComment"></my-comment>
         <div class="article-suspended-panel">
        
-            <el-badge :value="detail.likesCount" class="">
-             <span> <i class="iconfont icon-like"></i></span>
+            <el-badge :value="detail.likesCount" :class="{likesActive: detail.isLikes}">
+             <span @click="likes" > <i class="iconfont icon-like"></i></span>
             </el-badge>
 
             <el-badge :value="detail.commentCount" class="">
-             <span> <i class="iconfont icon-chat"></i></span>
+             <span @click="toComment"> <i class="iconfont icon-chat"></i></span>
             </el-badge>
-             <span> <svg-icon iconClass="collect2"></svg-icon></span>
+             <span @click="collect" :class="{collectActive:detail.isCollect}"> <svg-icon iconClass="collect2"></svg-icon></span>
        
 
        </div>
@@ -47,7 +47,7 @@
                         </div>
                       </div>
                       <div>
-                        <el-button v-if="!userInfo.isFollow">关注</el-button>  <el-button class="hasFollow" v-else>已关注</el-button> 
+                        <el-button v-if="!userInfo.isFollow" @click="follow">关注</el-button>  <el-button @click="follow" class="hasFollow" v-else>已关注</el-button> 
                         <el-button>私信</el-button>
                       </div>
 
@@ -95,6 +95,8 @@
       </template>
     </my-content>
 
+    <my-collection v-if="VisibleCollection" :article-id="parseInt(id as string)" @handle-close="(isCollect)=>{VisibleCollection=false; detail.isCollect=isCollect}" @handle-add-collect="handleAddCollect"></my-collection>
+    <add-collect v-if="VisibleAddCollect" @handle-close="handleAddCollectClose"></add-collect>
   </div>
 </template>
 
@@ -112,6 +114,13 @@ import catalogueVue from '@/components/Detail/catalogue.vue'
 import AsideItem from '@/components/aside/asideItem.vue'
 import MyComment from '@/components/comment/MyComment.vue'
 import {copy} from '@/utils/copyObject'
+import {isLogin,scrollToTop} from '@/utils/utils';
+import {followApi} from '@/api/follow';
+import {likesApi} from '@/api/likes'
+import MyCollection from '@/components/collection/MyCollection.vue'
+import AddCollect from '@/components/collection/AddCollect.vue'
+import {cancelCollect} from "@/api/collect"
+import { ElMessage } from 'element-plus'
 
 
 const route=useRoute();
@@ -128,11 +137,13 @@ let detail=ref<ArticleDetail>({
     title: undefined,
     viewCount: undefined,
     likesCount:undefined,
+    isLikes:false,
     createBy: undefined,
     avatar: undefined,
     nickName:undefined,
     content:undefined,
-    isComment:undefined
+    isComment:undefined,
+    isCollect:false
 });
 
 let userInfo=reactive<AuthorInfoByArticle>({
@@ -177,7 +188,7 @@ const getarticleDetail=async()=>{
   info.createTime=detail.value.createTime;
   info.nickName=detail.value.nickName;
   info.viewCount=detail.value.viewCount;
-
+  
 }
 
 
@@ -185,7 +196,6 @@ getarticleDetail();
 
 const getCatalogue=(catalogue:any)=>{
   cataloguesRef.value=catalogue;
-  // console.log(cataloguesRef);
   
 }
 
@@ -201,8 +211,6 @@ let catalogueDom=ref(null)
 const getAuthorInfoByArticle=async ()=>{
   const res:any = await authorInfoByArticle(id as string);
   copy(res.data,userInfo)
-  // console.log(userInfo);
-  
 }
 
 getAuthorInfoByArticle()
@@ -235,33 +243,82 @@ const handleScroll = () => {
 };
 
 //添加关注
-const follow =(userid:number)=>{
-  if (userInfo.isFollow){
-    //关注时点击，取消关注
-
-  }else{
-    //没有关注时，添加关注
-
-  } 
+const follow =async ()=>{
+  let b=isLogin()
+  if(!b){
+    return
+  }
+  let res:any=await followApi(userInfo.id)
+  userInfo.isFollow=!userInfo.isFollow;
 }
 
 //点赞
-const Likes=()=>{
+const likes=async ()=>{
+  let b=isLogin()
+  if(!b){
+    return
+  }
 
+  const res:any =likesApi(parseInt(id as string));
+  if(detail.value.isLikes){
+    detail.value.likesCount-=1;
+    detail.value.isLikes=false;
+  }else{
+    detail.value.likesCount+=1;
+    detail.value.isLikes=true;
+  }
 }
 
-//收藏
-const collect =()=>{
+//显示收藏夹
+let VisibleCollection=ref(false);
+const collect = async()=>{
+//判断登录
+let b=isLogin()
+if(!b){
+    return
+  }
 
-  
+//判断是否收藏，如果收藏,取消收藏
+if(detail.value.isCollect){
+
+  let res= await cancelCollect(parseInt(id as string))
+
+  ElMessage({
+    message:"已取消收藏！",
+    type:"success"
+  })
+  detail.value.isCollect=false;
+
+  return 
+}
+
+VisibleCollection.value=true;
 }
 
 //去评论 
-const toComment =()=>{
+let myComment=ref(null)
 
+const toComment =()=>{
+  scrollToTop(myComment.value.comment.offsetTop-60)
 }
 
 
+let VisibleAddCollect=ref(false)
+
+//新建收藏夹
+const handleAddCollect=()=>{
+  VisibleCollection.value=false;
+  VisibleAddCollect.value=true;
+}
+
+const handleAddCollectClose=()=>{
+  VisibleAddCollect.value=false;
+  setTimeout(()=>{
+    VisibleCollection.value=true;
+  })
+ 
+  
+}
 
 
 </script>
@@ -322,6 +379,23 @@ const toComment =()=>{
       margin-left: -7rem;
       top: 140px;
       z-index: 2;
+
+      .likesActive{
+
+        ::v-deep(.el-badge__content){
+        top: 8px;
+        background-color: var(--theme-bg9-color);
+      
+       }
+
+       span{
+          color: var(--theme-bg9-color) !important;
+          i:hover{
+            color: var(--theme-bg9-color) !important;
+          }
+       }
+
+      }
     
      ::v-deep(.el-badge__content){
         top: 8px;
@@ -353,6 +427,14 @@ const toComment =()=>{
           color: var(--theme-text3-color);
         }
         
+      }
+
+      .collectActive{
+        color: var(--theme-text5-color);
+
+        :hover{
+          color: var(--theme-text5-color);
+        }
       }
 
     }

@@ -1,4 +1,3 @@
-import { type } from "os"
 
 export  type ArticleListInfo={
     id:number,
@@ -35,11 +34,13 @@ export type ArticleDetail={
     title:string,
     viewCount:number,
     likesCount:number,
+    isLikes:boolean,
     createBy:number,
     avatar:string,
     nickName:string,
     content:string,
-    isComment:string
+    isComment:string,
+    isCollect:boolean
 }
 
 export type CommentInfo ={
@@ -55,7 +56,8 @@ export type CommentInfo ={
     toCommentId:number,
     toCommentUserAvatar:string,
     toCommentUserName:string,
-    toCommentUserId:number
+    toCommentUserId:number,
+    likesCount:number
 
 }
 

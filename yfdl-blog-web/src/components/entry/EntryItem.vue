@@ -57,12 +57,13 @@ type Props={
 const handleClick=()=>{
 
   
-  router.push({
+ let {href}= router.resolve({
     name:'detail',
     params:{
       id:props.article.id
     }
   })
+  window.open(href,"_blank");
 }
 
 

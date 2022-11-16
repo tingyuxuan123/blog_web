@@ -1,5 +1,5 @@
 <template>
-  <div class="myComment">
+  <div class="myComment" ref="comment">
     <h1>评论</h1>
     <div class="sendComment" v-if="userStore.token">
       <div class="img"><img :src="userStore.userInfo.avatar" alt=""></div> <send-comment @sendClick="getComment" :commentInfo="sendCommentinfo"></send-comment>
@@ -21,10 +21,10 @@
            
           </div>
           <div class="content-footer">
-            <span> <svg-icon iconClass="likes"></svg-icon> {{ '点赞' }}</span>
-            <span  @click="replyClick(comment)">  <svg-icon iconClass="message"></svg-icon> {{comment.children.length >0 ? comment.children.length : '回复'}}</span>
+            <span @click="()=>{likes(comment.id,comment);}" :class="{likesActive:isLike(comment.id)}"> <svg-icon iconClass="likes"></svg-icon> {{comment.likesCount >0?  comment.likesCount : '点赞' }}</span>
+            <span  @click.stop="replyClick(comment)">  <svg-icon iconClass="message"></svg-icon> {{comment.children.length >0 ? comment.children.length : '回复'}}</span>
           </div>
-          <send-comment v-if="replyId==comment.id" @sendClick="getComment" :commentInfo="sendReply"></send-comment>
+          <send-comment v-if="replyId==comment.id" @sendClick="getComment" :commentInfo="sendReply" @click.stop=""></send-comment>
           <div class="replys" v-if='comment.children.length>0'>
               <div class="comment-item" v-for="reply in comment.children">
                 <img :src="reply.avatar" alt="">
@@ -37,11 +37,11 @@
                    
                   </div>
                   <div class="content-footer">
-                    <span> <svg-icon iconClass="likes"></svg-icon> {{ '点赞' }}</span>
-                    <span @click="replyClick2(reply,comment.id)">  <svg-icon iconClass="message" ></svg-icon> {{ '回复'}}</span>
-                    <send-comment v-if="replyId==reply.id" @sendClick="getComment" :commentInfo="sendReply"></send-comment>
+                    <span @click="()=>{likes(reply.id,reply);}" :class="{likesActive:isLike(reply.id)}"> <svg-icon iconClass="likes"></svg-icon>  {{reply.likesCount >0?  reply.likesCount : '点赞' }}</span>
+                    <span @click.stop="replyClick2(reply,comment.id)" >  <svg-icon iconClass="message" ></svg-icon> {{ '回复'}}</span>
+                    <send-comment v-if="replyId==reply.id" @sendClick="getComment" :commentInfo="sendReply" @click.stop=""></send-comment>
                   </div>
-                
+               
                 </div>
               </div>
           </div>
@@ -59,15 +59,17 @@
 </template>
 
 <script lang='ts' setup >
-import {reactive, ref} from 'vue'
+import {reactive, ref,onMounted} from 'vue'
 import type {CommentInfo} from '@/api/apiType'
-import {commentList} from '@/api/comment'
+import {commentList,thumbsUp} from '@/api/comment'
 import {formatting} from '@/utils/time'
 import SendComment from './sendComment/SendComment.vue'
 import {useUserStore} from '@/stores/userStore'
 import {usescrollStore} from '@/stores/useScroll'
 import type {SendCommentInfo} from '@/api/apiType'
 import {useRoute} from 'vue-router'
+import {isLogin} from '@/utils/utils';
+import {likeCommentByArticle} from '@/api/likesComment'
 
 const userStore=useUserStore();
 const scrollStore=usescrollStore()
@@ -83,6 +85,16 @@ let pageinfo={
 }
 
 let replyId=ref(0);
+onMounted(()=>{
+
+  document.addEventListener("click",()=>{
+    replyId.value=0;
+    
+  })
+
+
+})
+
 
 
 let sendCommentinfo=reactive<SendCommentInfo>({
@@ -107,22 +119,20 @@ let comments=ref<CommentInfo[]>([])
 
 const props=defineProps<Props>()
 
-    console.log(props.articleId);
 
 const getComment=async ()=>{
 
    const res= await commentList(pageinfo,props.articleId)
-   
    comments.value=res.data?.rows;
-
-   console.log(comments.value);
-   
 }
 
 getComment();
-
+//回复按钮点击
 const replyClick=(comment:CommentInfo)=>{
-  console.log(comment);
+  let b=isLogin()
+  if(!b){
+    return
+  }
   
   replyId.value=comment.id
 
@@ -133,7 +143,10 @@ const replyClick=(comment:CommentInfo)=>{
 }
 
 const replyClick2=(comment:CommentInfo,rootId:number)=>{
-  console.log(comment);
+  let b=isLogin()
+  if(!b){
+    return
+  }
   
   replyId.value=comment.id
 
@@ -143,6 +156,62 @@ const replyClick2=(comment:CommentInfo,rootId:number)=>{
 
 }
 
+
+//点赞点击
+const likes=async (commentId:number,comment:any)=>{
+//判斷是否登录
+  let b=isLogin()
+  if(!b){
+    return
+  }
+
+  //判断是否点赞
+ if(isLike(commentId)){
+  //如果点赞取消点赞
+  likesCommentList.value= likesCommentList.value.filter((item)=>{
+    return item!=commentId
+  }) 
+  
+  comment.likesCount-=1;
+}else{
+  //反之取消点赞
+  likesCommentList.value.push(commentId)
+  comment.likesCount+=1;
+}  
+ 
+
+  const res = await thumbsUp(commentId,props.articleId);
+
+
+}
+
+const comment=ref<HTMLElement>()
+  defineExpose({comment})
+
+
+//获取这篇文章点赞过的评论  
+let likesCommentList=ref([])
+
+const getLikeCommentByArticle=async ()=>{
+  const res= await likeCommentByArticle(props.articleId);
+  likesCommentList.value=res.data
+  console.log(likesCommentList.value);  
+}
+
+//判断是否点赞
+const isLike=(commentId:number)=>{
+  console.log(likesCommentList.value.some((item)=>{
+        return item ==commentId
+    }));
+  
+   return likesCommentList.value.some((item)=>{
+        return item ==commentId
+    })
+}
+
+
+
+getLikeCommentByArticle();
 
 </script>
 
@@ -229,6 +298,10 @@ const replyClick2=(comment:CommentInfo,rootId:number)=>{
             font-size: 14px;
             cursor: pointer;
           }
+        }
+
+        .likesActive{
+           color: var(--theme-text-active-color);
         }
         
       }

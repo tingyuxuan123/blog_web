@@ -14,3 +14,12 @@ export const comment=(comment:any)=>{
     })
 }
 
+/**
+ * 点赞
+ */
+export const thumbsUp=(commentId:number,articleId:number)=>{
+    return request("/comment/thumbsUp","get",{
+        commentId,
+        articleId
+    })
+}

@@ -18,3 +18,4 @@ export const articleDetail=(id:string)=>{
 export const updateViewCount=(id:string)=>{
     return request(`/article/updateViewCount/${id}`,"put")
 }
+
