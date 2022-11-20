@@ -63,6 +63,7 @@ declare module '@vue/runtime-core' {
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     UserAchievements: typeof import('./src/components/user/UserAchievements.vue')['default']
     UserAction: typeof import('./src/components/user/UserAction.vue')['default']
+    UserFollow: typeof import('./src/components/user/UserFollow.vue')['default']
     UserInfo: typeof import('./src/components/user/UserInfo.vue')['default']
     UserInfoBlock: typeof import('./src/components/user/userInfoBlock.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
