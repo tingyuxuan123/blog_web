@@ -1,51 +1,43 @@
+:root {
+  --content-width: 1100px;
 
-:root{
+  --theme-color: #333;
+  --theme-background: #eee;
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #909399;
 
-    --content-width:1100px;
+  --theme-text1-color: #303133;
+  --theme-text2-color: #606266;
+  --theme-text3-color: #515767;
+  --theme-text4-color: #86909c; /* 文章列表概括 */
+  --theme-text5-color: #1e80ff; /* tag 标签 */
+  --theme-text6-color: #8a919f;
+  --theme-text7-color: #7dbaff;
 
+  --theme-text-active-color: #1e80ff;
+  --theme-bg-active-color: #e8f3ff;
+  --theme-text-hover-color: #a0cfff;
 
-    --theme-color: #333;
-    --theme-background: #eee;
-    --success-color:#67C23A;
-    --warning-color:#E6A23C;
-    --danger-color:#F56C6C;
-    --info-color:#909399;
+  --theme-block-hover-color: #fafafa;
+  --theme-block-hover-bg-color: #f7f8fa;
 
-    --theme-text1-color:#303133;
-    --theme-text2-color:#606266;
-    --theme-text3-color:#515767;
-    --theme-text4-color:#86909c;  /* 文章列表概括 */
-    --theme-text5-color:#1e80ff;  /* tag 标签 */
-    --theme-text6-color:#8a919f;
-    --theme-text7-color:#7dbaff;
-    
-    
-    --theme-text-active-color:#1e80ff;
-    --theme-text-hover-color:#a0cfff;
+  --theme-bg1-color: #ebedf0;
+  --theme-bg2-color: #f0f2f5;
+  --theme-bg3-color: #fafafa;
+  --theme-bg4-color: #ffffff;
+  --theme-bg5-color: #eaf2ff;
+  --theme-bg6-color: #f7f8fab3;
+  --theme-bg7-color: #f2f3f5;
+  --theme-bg8-color: #ddedff;
+  --theme-bg9-color: #1e80ff;
+  --theme-bg10-color: #c2c8d1;
 
-    --theme-block-hover-color:#fafafa;
-    --theme-block-hover-bg-color:#f7f8fa;
-  
-    --theme-bg1-color:#EBEDF0;
-    --theme-bg2-color:#F0F2F5;
-    --theme-bg3-color:#FAFAFA;
-    --theme-bg4-color:#FFFFFF;
-    --theme-bg5-color:#eaf2ff;
-    --theme-bg6-color:#f7f8fab3;
-    --theme-bg7-color:#f2f3f5;
-    --theme-bg8-color:#ddedff;
-    --theme-bg9-color:#1e80ff;
-    --theme-bg10-color:#c2c8d1;
-
-    --theme-border1-color:#00000021;
-    --theme-border2-color:#97979733;
-    --theme-border3-color:#dcdfe6;
-    --theme-header-bg-color:#FFFFFF;
-
-    
-    
-
-   
+  --theme-border1-color: #00000021;
+  --theme-border2-color: #97979733;
+  --theme-border3-color: #dcdfe6;
+  --theme-header-bg-color: #ffffff;
 }
 
 /* .blue-light{
@@ -56,20 +48,20 @@
     --theme-text5-color: #ecf5ff;
 } */
 
-.dark{
-    --theme-text1-color:#b2b2b2;
-    --theme-text2-color:#8b8b8b;
-    --theme-bg1-color:#343434;
-    --theme-bg2-color:#484848;
-    --theme-bg3-color:#575757;
-    --theme-bg4-color:#616161;
+.dark {
+  --theme-text1-color: #b2b2b2;
+  --theme-text2-color: #8b8b8b;
+  --theme-bg1-color: #343434;
+  --theme-bg2-color: #484848;
+  --theme-bg3-color: #575757;
+  --theme-bg4-color: #616161;
 }
 
-.light{
-    --theme-text1-color:#303133;
-    --theme-text2-color:#606266;
-    --theme-bg1-color:#EBEDF0;
-    --theme-bg2-color:#F0F2F5;
-    --theme-bg3-color:#FAFAFA;
-    --theme-bg4-color:#FFFFFF;
+.light {
+  --theme-text1-color: #303133;
+  --theme-text2-color: #606266;
+  --theme-bg1-color: #ebedf0;
+  --theme-bg2-color: #f0f2f5;
+  --theme-bg3-color: #fafafa;
+  --theme-bg4-color: #ffffff;
 }

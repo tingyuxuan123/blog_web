@@ -21,7 +21,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "type":["node"],
+  "type": ["node"],
   "references": [
     {
       "path": "./tsconfig.config.json"

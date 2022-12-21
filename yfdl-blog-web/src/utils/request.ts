@@ -4,79 +4,81 @@
 //4. 导出一个函数，调用当前的axios实例发请求
 
 import axios from 'axios'
-import {useUserStore} from "@/stores/userStore"
-import {usescrollStore} from '@/stores/useScroll'
+import { useUserStore } from '@/stores/userStore'
+import { usescrollStore } from '@/stores/useScroll'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
-export const baseURL:string="http://127.0.0.1:7777/"
+export const baseURL: string = 'http://127.0.0.1:7777/'
 
-
-
-const instance=axios.create({
-    baseURL,
-    timeout:5000
+const instance = axios.create({
+  baseURL,
+  timeout: 15000
 })
 
-
-instance.interceptors.request.use((config)=>{
+instance.interceptors.request.use(
+  (config) => {
     const userStore = useUserStore()
-      const token= userStore.token
-    
-      if(token){
-        config.headers.token=token
-      }
+    const token = userStore.token
 
-      return config
+    if (token) {
+      config.headers.token = token
+    }
 
-},(err)=>{
+    return config
+  },
+  (err) => {
     return Promise.reject(err)
-})
+  }
+)
 
-
-
-instance.interceptors.response.use((res)=>{
+instance.interceptors.response.use(
+  (res) => {
     const userStore = useUserStore()
-    if(res.data.code === 401){
+    if (res.data.code === 401) {
       let scrollStore = usescrollStore()
-        userStore.$reset(); //清空用户数据
-          
-        ElMessage({
-            message: res.data.msg,
-            type: 'warning',
-          })
-     scrollStore.isVisibleLoginForm=true;  //跳出登录界面
+      userStore.$reset() //清空用户数据
+
+      ElMessage({
+        message: res.data.msg,
+        type: 'warning'
+      })
+      scrollStore.isVisibleLoginForm = true //跳出登录界面
     }
 
     return res.data
-},err=>{
+  },
+  (err) => {
     const userStore = useUserStore()
     //401 状态码，进入改函数
-    if(err.response && err.response.status === 401){
-        //1.清空无效用户信息
-        //2.跳转到登录页
-        //3.跳转需要传参（当前地址）给登录页码
+    if (err.response && err.response.status === 401) {
+      //1.清空无效用户信息
+      //2.跳转到登录页
+      //3.跳转需要传参（当前地址）给登录页码
 
-        userStore.$reset(); //清空用户数据
-        //js模块中：router.currentRoute.value.fullPath
-        const fullPath:string=encodeURIComponent(router.currentRoute.value.fullPath);
-        //encodeURIComponent 转换url编码，防止解析时出现问题
-        router.push("/login?redirectUrl="+fullPath)        
-
+      userStore.$reset() //清空用户数据
+      //js模块中：router.currentRoute.value.fullPath
+      const fullPath: string = encodeURIComponent(
+        router.currentRoute.value.fullPath
+      )
+      //encodeURIComponent 转换url编码，防止解析时出现问题
+      router.push('/login?redirectUrl=' + fullPath)
     }
 
-
     return Promise.reject(err)
-})
+  }
+)
 
-export default((url:string,method:string,submitData?:Record<string,any>,headers?:Record<string,any>)=>{
-
-    return instance({
-        url,
-        method,
-        //如果是get请求 需要使用params传递，反之使用data
-        [method.toLowerCase() ==='get' ? "params" :"data"]:submitData,
-        headers
-    })
-
-})
-
+export default (
+  url: string,
+  method: string,
+  submitData?: Record<string, any>,
+  headers?: Record<string, any>
+) => {
+  return instance({
+    url,
+    method,
+    //如果是get请求 需要使用params传递，反之使用data
+    [method.toLowerCase() === 'get' ? 'params' : 'data']: submitData,
+    headers
+  })
+}

@@ -16,20 +16,16 @@ import '@/assets/icons/icon/iconfont.css'
 import './styles/theme.css'
 import './styles/index.scss'
 
-
-
-
-
 const app = createApp(App)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
-  }
+  app.component(key, component)
+}
 
-app.component("svg-icon",SvgIcon);
+app.component('svg-icon', SvgIcon)
 
-const store=createPinia()
-store.use(piniaPluginPersist);
+const store = createPinia()
+store.use(piniaPluginPersist)
 
 app.use(store)
 app.use(router)

@@ -1,6 +1,12 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": [
+    "env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
   "compilerOptions": {
     "types": ["element-plus/global"],
     "preserveValueImports": false,
@@ -21,7 +27,7 @@
       "@/*": ["src/*"]
     }
   },
-  "type":["node"],
+  "type": ["node"],
   "references": [
     {
       "path": "./tsconfig.config.json"

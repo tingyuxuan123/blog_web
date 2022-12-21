@@ -1,14 +1,10 @@
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime';
-import "dayjs/locale/zh-cn"
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/zh-cn'
 
-dayjs.locale('zh-cn');
-dayjs.extend(relativeTime);
+dayjs.locale('zh-cn')
+dayjs.extend(relativeTime)
 
-export const formatting=(time:string)=>{
-
-    return dayjs().to(dayjs(time)).replace(/\s*/g,"");
- 
- }
-
- 
+export const formatting = (time: string) => {
+  return dayjs().to(dayjs(time)).replace(/\s*/g, '')
+}

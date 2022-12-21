@@ -1,18 +1,12 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
-export const usescrollStore=defineStore("scrollStore",{
-    state:()=>{
-        return{
-            isVisibleLoginForm:false
-        }
-    },
-    getters:{
-
-    },
-    actions:{
-
-    },
-    persist:true
-
-
+export const usescrollStore = defineStore('scrollStore', {
+  state: () => {
+    return {
+      isVisibleLoginForm: false
+    }
+  },
+  getters: {},
+  actions: {},
+  persist: true
 })

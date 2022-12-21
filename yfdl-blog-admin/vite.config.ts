@@ -5,31 +5,31 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
-import {createSvgIconsPlugin} from 'vite-plugin-svg-icons'; 
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),
+  plugins: [
+    vue(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     createSvgIconsPlugin({
       // 指定需要缓存的图标文件夹
       iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')],
-      // 指定symbolId格式 
-      symbolId: 'icon-[dir]-[name]',
-    }),
-
+      // 指定symbolId格式
+      symbolId: 'icon-[dir]-[name]'
+    })
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname,'./src')
+      '@': path.resolve(__dirname, './src')
     }
-  },
-  
+  }
+
   // css:{
   //   preprocessorOptions:{
   //     less:{
@@ -38,10 +38,8 @@ export default defineConfig({
   //           __dirname,
   //           "./src/assets/styles/mixins.less",
   //         )}";`,
-          
-     
+
   //     }
   //   }
   // }
-
 })
