@@ -10,6 +10,9 @@
         label-position="left"
         style="min-width: 460px; width: 100%"
       >
+        <el-form-item label="账号:" style="width: 100%">
+          <el-input v-model="userInfo.userName" :disabled="true" />
+        </el-form-item>
         <el-form-item label="用户名:" style="width: 100%">
           <el-input
             v-model="userInfo.nickName"
@@ -95,6 +98,7 @@ import { ElMessage } from 'element-plus'
 import { updateUserInfo } from '@/api/user'
 
 type UserInfo = {
+  userName: string
   avatar: string
   nickName: string
   company: string
@@ -105,6 +109,7 @@ type UserInfo = {
 }
 
 const userInfo = ref<UserInfo>({
+  userName: null,
   avatar: null,
   nickName: null,
   company: null,

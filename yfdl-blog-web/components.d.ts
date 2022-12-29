@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Account: typeof import('./src/components/settings/account.vue')['default']
     AddCollect: typeof import('./src/components/collection/AddCollect.vue')['default']
+    Article: typeof import('./src/components/user/article/article.vue')['default']
     ArticleUser: typeof import('./src/components/Detail/articleUser.vue')['default']
     Aside: typeof import('./src/components/aside/aside.vue')['default']
     AsideItem: typeof import('./src/components/aside/asideItem.vue')['default']
@@ -62,6 +63,7 @@ declare module '@vue/runtime-core' {
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
+    Likes: typeof import('./src/components/user/likes/likes.vue')['default']
     MD: typeof import('./src/components/MD.vue')['default']
     Menu: typeof import('./src/components/common/menu.vue')['default']
     MyCollection: typeof import('./src/components/collection/MyCollection.vue')['default']

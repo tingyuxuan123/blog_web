@@ -17,8 +17,7 @@
             <span>文章</span>
           </span>
         </template>
-
-        <entry-list :article-list="articleList"></entry-list>
+        <user-article :id="id"></user-article>
       </el-tab-pane>
       <el-tab-pane label="收藏夹" name="collection">
         <template #label>
@@ -46,7 +45,7 @@
             <span>点赞</span>
           </span>
         </template>
-        Task
+        <likes :id="id"></likes>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -55,11 +54,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon/index.vue'
-import EntryList from '@/components/entry/EntryList.vue'
-import { articleListByUserId } from '@/api/article'
-import type { ArticleListInfo } from '@/api/apiType'
+import UserArticle from './article/article.vue'
 import collect from '@/components/user/collect/collect.vue'
 import follow from './follow/follow.vue'
+import likes from './likes/likes.vue'
 
 type Props = {
   id: number
@@ -67,19 +65,7 @@ type Props = {
 const props = defineProps<Props>()
 
 let activeName = ref('dynamic')
-const handleClick = () => {}
-
-let articleList = ref<ArticleListInfo[]>()
-
-const getArticleListByUserId = async () => {
-  const res = await articleListByUserId(props.id, 10, 1)
-
-  articleList.value = res.data.rows
-
-  // console.log(articleList)
-}
-
-getArticleListByUserId()
+// const handleClick = () => {}
 </script>
 
 <style scoped lang="scss">
@@ -89,6 +75,10 @@ getArticleListByUserId()
   min-height: 500px;
   box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.1);
   border-radius: 5px;
+
+  ::v-deep(.el-tabs__header) {
+    margin: auto;
+  }
 
   ::v-deep(.el-tabs__item) {
     margin: 0px 20px;

@@ -11,3 +11,7 @@ export const followListApi = (id: number) => {
     id
   })
 }
+
+export const followIdsApi = () => {
+  return request('/follow/getFollowIds', 'get')
+}

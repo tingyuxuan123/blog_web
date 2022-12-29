@@ -26,3 +26,9 @@ export const articleDetail = (id: string) => {
 export const updateViewCount = (id: string) => {
   return request(`/article/updateViewCount/${id}`, 'put')
 }
+
+export const articleListByUserLikes = (userId: number) => {
+  return request('/article/articleListByUserLikes', 'get', {
+    userId
+  })
+}

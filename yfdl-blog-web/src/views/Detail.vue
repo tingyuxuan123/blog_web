@@ -73,7 +73,7 @@
                     </div>
                   </div>
                   <div>
-                    <el-button v-if="!userInfo.isFollow" @click="follow"
+                    <el-button v-if="!userInfo.isFollow" @click="handelFollow"
                       >关注</el-button
                     >
                     <el-button @click="follow" class="hasFollow" v-else
@@ -156,7 +156,7 @@ import catalogueVue from '@/components/Detail/catalogue.vue'
 import AsideItem from '@/components/aside/asideItem.vue'
 import MyComment from '@/components/comment/MyComment.vue'
 import { copy } from '@/utils/copyObject'
-import { isLogin, scrollToTop } from '@/utils/utils'
+import { follow, isLogin, scrollToTop } from '@/utils/utils'
 import { followApi } from '@/api/follow'
 import { likesApi } from '@/api/likes'
 import MyCollection from '@/components/collection/MyCollection.vue'
@@ -282,12 +282,8 @@ const handleScroll = () => {
 }
 
 //添加关注
-const follow = async () => {
-  let b = isLogin()
-  if (!b) {
-    return
-  }
-  let res: any = await followApi(userInfo.id)
+const handelFollow = async () => {
+  await follow(info.id)
   userInfo.isFollow = !userInfo.isFollow
 }
 

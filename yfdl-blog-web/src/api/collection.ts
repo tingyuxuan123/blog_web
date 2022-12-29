@@ -6,8 +6,10 @@ export const createCollection = (collection: any) => {
   })
 }
 
-export const collectionListApi = () => {
-  return request('/collection/collectionList', 'get')
+export const collectionListApi = (id?: number) => {
+  return request('/collection/collectionList', 'get', {
+    id
+  })
 }
 
 export const deleteCollectionApi = (collectionId: number) => {

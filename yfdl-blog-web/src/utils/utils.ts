@@ -1,3 +1,4 @@
+import { followApi } from '@/api/follow'
 import { useUserStore } from '@/stores/userStore'
 import { usescrollStore } from '@/stores/useScroll'
 import { ElMessage } from 'element-plus'
@@ -22,6 +23,22 @@ export const isLogin = () => {
 
     return false
   }
+}
+
+export const follow = async (id: number) => {
+  if (!isLogin()) {
+    return
+  }
+
+  const index = userStore.followIds.indexOf(id)
+
+  if (index !== -1) {
+    //取消关注
+    userStore.followIds.splice(index, 1)
+  } else {
+    userStore.followIds.push(id)
+  }
+  const res = await followApi(id)
 }
 
 /**

@@ -1,6 +1,6 @@
 <template>
   <div class="collect">
-    <div class="header">
+    <div class="header" v-if="collections.length > 0">
       <span class="collectionCount">收藏集数{{ collections.length }}</span>
       <NeedAuth :id="props.id">
         <div class="addCollectionBtn">
@@ -25,6 +25,7 @@
         </div>
       </NeedAuth>
     </div>
+    <el-empty v-else description="暂无数据" />
 
     <div class="content">
       <ul>
@@ -119,7 +120,7 @@ const needUpdateCollection = reactive<Collection>({
 })
 
 const getCollectionList = async () => {
-  let res = await collectionListApi()
+  let res = await collectionListApi(props.id)
   collections.value = res.data
 
   console.log(collections.value)
@@ -184,6 +185,7 @@ const collectionEdit = (Collection: Collection) => {
   }
 
   .collectionCount {
+    margin-top: 15px;
     padding: 5px 10px;
     background-color: #eaf2ff;
     border-radius: 16px;

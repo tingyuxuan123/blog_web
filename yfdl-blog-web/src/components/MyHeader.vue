@@ -10,16 +10,16 @@
           <el-input placeholder="搜索" :suffix-icon="Search"></el-input>
         </div>
 
-        <span>管理端</span>
+        <i class="iconfont icon-bell notification"></i>
 
-        <el-switch
+        <!-- <el-switch
           v-model="theme"
           class="mt-2"
           style="margin-left: 24px"
           inline-prompt
           :active-icon="Check"
           :inactive-icon="Close"
-        />
+        /> -->
         <el-button
           v-if="!userStore.token"
           type="primary"
@@ -27,7 +27,7 @@
           @click="loginClick"
           >登录/注册</el-button
         >
-        <di v-else>
+        <div v-else class="userinfo">
           <el-dropdown>
             <el-avatar
               :size="30"
@@ -36,16 +36,23 @@
             <el-avatar></el-avatar>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="toUserInfo"
-                  >个人主页</el-dropdown-item
-                >
-                <el-dropdown-item @click="handleLogout"
-                  >退出登录</el-dropdown-item
-                >
+                <el-dropdown-item @click="toUserInfo">
+                  <i class="iconfont icon-user-picture"></i>个人主页
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="toSetting">
+                  <i class="iconfont icon-setUp"></i>设置
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="toManagement">
+                  <el-icon><Grid /></el-icon> 管理端
+                  <!-- <i class="iconfont icon-setUp"></i>管理端 -->
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="handleLogout">
+                  <i class="iconfont icon-quit"></i>退出登录
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-        </di>
+        </div>
       </div>
     </div>
   </div>
@@ -102,6 +109,7 @@ const handleLogout = async () => {
 }
 let router = useRouter()
 
+//前往个人信息页面
 const toUserInfo = () => {
   let { href } = router.resolve({
     name: 'user',
@@ -110,6 +118,15 @@ const toUserInfo = () => {
     }
   })
   window.open(href, '_blank')
+}
+
+//设置
+const toSetting = () => {
+  router.push('/settings/profile')
+}
+
+const toManagement = () => {
+  window.location.href = 'http://127.0.0.1:5174/layout'
 }
 </script>
 
@@ -146,6 +163,25 @@ const toUserInfo = () => {
     width: 500px;
     justify-content: space-evenly;
     align-items: center;
+
+    .userinfo {
+      cursor: pointer;
+    }
+
+    .notification {
+      font-size: 24px;
+      cursor: pointer;
+      &:hover {
+        color: #a6a2a2;
+      }
+    }
+
+    .backstage {
+      cursor: pointer;
+      &:hover {
+        color: #a6a2a2;
+      }
+    }
   }
 }
 </style>

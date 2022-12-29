@@ -81,6 +81,7 @@ import { usescrollStore } from '@/stores/useScroll'
 import { sendEmail, loginOrRegisterByCode, login } from '@/api/login'
 import { useUserStore } from '@/stores/userStore'
 import { copy } from '@/utils/copyObject'
+import { followIdsApi } from '@/api/follow'
 
 const userStore = useUserStore()
 
@@ -91,6 +92,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
 }
 
+//获取验证码
 const getCode = async () => {
   const res: any = await sendEmail(codeForm.email)
 
@@ -119,7 +121,6 @@ watch(isCanSend, (newval) => {
       }
     }, 1000)
   }
-  console.log(newval)
 })
 
 const loginClick = async () => {
@@ -133,9 +134,11 @@ const loginClick = async () => {
   }
 
   if (res.code == 200) {
+    //把登录后的个人信息保存到store中
     copy(res.data.userInfo, userStore.userInfo)
     userStore.token = res.data.token
-
+    await userStore.getFollowIds()
+    // await getFollowIds()
     ElMessage({
       message: '登录成功',
       type: 'success'

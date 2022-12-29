@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-
+import { followIdsApi } from '@/api/follow'
+import { ElMessage } from 'element-plus'
 export const useUserStore = defineStore('userStore', {
   state: () => {
     return {
@@ -17,10 +18,17 @@ export const useUserStore = defineStore('userStore', {
         phonenumber: null, // 手机号
         position: null, //职位
         company: null //公司
-      }
+      },
+      followIds: [] //用户关注的id列表
     }
   },
   getters: {},
-  actions: {},
+  actions: {
+    async getFollowIds() {
+      const res = await followIdsApi()
+      const ids = res.data
+      this.followIds = ids
+    }
+  },
   persist: true
 })
